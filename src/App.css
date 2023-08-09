@@ -56,3 +56,14 @@
   left: 0;
   border-radius: 200px;
 }
+
+.img-container {
+  flex: none; /* Impede que o contêiner da imagem cresça */
+  width: 150px; /* Ajuste o tamanho conforme necessário */
+  height: auto; /* A altura será ajustada automaticamente para manter a proporção */
+}
+
+.custom-img {
+  max-width: 100%; /* Garante que a imagem não ultrapasse o tamanho do contêiner */
+  height: auto;
+}

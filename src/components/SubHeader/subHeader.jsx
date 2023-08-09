@@ -15,7 +15,7 @@ export const SubHeader = () => {
 
     return (
         <Col xs={12} md={{span: 8, offset: 2}}>
-            <div style={{display: 'flex', flexDirection: 'row', justifyContent: 'space-between', marginTop: '7.69rem', alignItems: 'flex-end'}}>
+            <div style={{display: 'flex', flexDirection: 'row', justifyContent: 'space-between', marginTop: '7.69rem', alignItems: 'flex-end', marginBottom: '3rem'}}>
                 <div style={{display: 'block', fontSize: '1.6rem', fontWeight: 400, color: '#213249;'}}>
                     As principais noticias sobre o<br/>esporte regional em <span style={{color: 'red'}}>um só lugar</span>
                 </div>
