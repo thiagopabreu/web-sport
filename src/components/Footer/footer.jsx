@@ -11,7 +11,7 @@ export const Footer = () => {
     lineHeight: '1.5rem'
   }
     return (
-            <footer className="text-light py-3 text-center" style={{backgroundColor:'#091B36'}}>
+            <footer className="text-light py-5 text-center" style={{backgroundColor:'#091B36'}}>
               <Container fluid className="justify-content-center align-itens-center align-content-center">
                 <Row className="align-items-center justify-content-center">
                   <Col md={3} className="justify-content-center align-itens-center align-content-center">
@@ -19,10 +19,10 @@ export const Footer = () => {
                   </Col>
                   <Col md={3} className="d-flex flex-column align-items-center">
                     <Navbar>
-                      <Nav className="flex-column" >
-                        <Nav.Link href="#" style={navLink}>Ínicio</Nav.Link>
-                        <Nav.Link href="#" style={navLink}>Notícias</Nav.Link>
-                        <Nav.Link href="#" style={navLink}>Campeonatos</Nav.Link>
+                      <Nav className="flex-column align-content-start align-itens-start" >
+                        <Nav.Link href="#" style={navLink} className="d-flex row align-items-start">Ínicio</Nav.Link>
+                        <Nav.Link href="#" style={navLink} className="d-flex row align-items-start">Notícias</Nav.Link>
+                        <Nav.Link href="#" style={navLink} className="d-flex row align-items-start">Campeonatos</Nav.Link>
                       </Nav>
                     </Navbar>
                   </Col>
@@ -34,7 +34,7 @@ export const Footer = () => {
                       </Nav>
                     </Navbar>
                   </Col>
-                  <Col md={3} className="d-flex flex-column align-items-center">
+                  <Col md={3} className="d-flex flex-column align-items-start align-content-start">
                     <div className="d-flex flex-column">
                       <p>Mídias Sociais</p>
                       <div className="d-flex justify-content-between">
