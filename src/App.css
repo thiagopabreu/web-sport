@@ -67,3 +67,23 @@
   max-width: 100%; /* Garante que a imagem não ultrapasse o tamanho do contêiner */
   height: auto;
 }
+
+.custom-drop-down {
+  
+}
+
+input[type=text] {
+  background-color: #F2F4F8;
+  border-top-left-radius: 0;
+  border: none;
+}
+
+input[type=text]::placeholder {
+  color: #091B36
+}
+
+input[type=text]:focus {
+  outline: none;
+  box-shadow: none;
+  background-color: #F2F4F8;
+}
