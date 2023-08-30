@@ -1,5 +1,5 @@
 # Use uma imagem base Node.js com a versão desejada
-FROM node:16-alpine3.17
+FROM node:alpine3.18
 
 # Defina o diretório de trabalho dentro do contêiner
 WORKDIR /app
@@ -17,4 +17,4 @@ COPY . .
 RUN npm run build
 
 # Defina o comando para iniciar o servidor Next.js
-CMD ["npm", "run", "server"]
+CMD ["npm", "start"]
