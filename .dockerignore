@@ -1,0 +1,6 @@
+.git
+.gitignore
+.dockerignore
+captain-definition
+dockerfile
+README.md
