@@ -25,8 +25,8 @@ export const MainNews = (props) => {
     const fetchData = async () => {
       const response = await NewsService.getNews();
       console.log(response)
-      console.log(response.news.length)
-        if(response.news.length > 0) {
+      const thisNews = response.news
+        if(thisNews.length > 0) {
           const dateOriginal = response.news[response.news.length - 1].data_publicacao
           const dateHourObject = new Date(dateOriginal)
           const day = dateHourObject.getUTCDate();
@@ -47,26 +47,27 @@ export const MainNews = (props) => {
     //     const formatedDate = `${day}/${formatedMonth}/${year}`
     //     response.news[index].data_publicacao = formatedDate
     // })
-      if (response.news && Array.isArray(response.news) && response.news.length > 0) {
-        console.log('entrei aqui');
-        
-        setNews(response.news[response.news.length - 1]);
+        if (response.news && Array.isArray(response.news) && response.news.length > 0) {
+          console.log('entrei aqui');
+          
+          setNews(response.news[response.news.length - 1]);
 
-        
-        const lastNewsItem = response.news[response.news.length - 1];
-        console.log(lastNewsItem);
-        const relation = await RelationPhotoService.getRelation(lastNewsItem.id);
-        console.log(relation);
-        setPath(relation.relationPhoto.id_foto_fk);
-    }
+          
+          const lastNewsItem = response.news[response.news.length - 1];
+          console.log(lastNewsItem);
+          const relation = await RelationPhotoService.getRelation(lastNewsItem.id);
+          console.log(relation);
+          setPath(relation.relationPhoto.id_foto_fk);
+      }
         }
     }
 
-    console.log(path)
-    const renderMainNews = () => {
-      return (
+    console.log(news)
+    return (
+      <>
         <Row className={isMobile ? "flex-column align-content-center justify-content-center align-items-center" : "d-flex flex-row"} style={{flexWrap: "nowrap"}}>
         <Col xs={12} md={6} className="img-container d-flex flex-column align-items-center justify-content-center">
+          {console.log('entrei aqui')}
           <img src={`${api}photo/getPhoto/${path}`} width={640} height={400} alt="Imagem de exemplo" className="img-fluid" />
         </Col>
         <Col xs={12} md={6} className={isMobile && "mt-5 w-100"} style={{display: 'flex', flexDirection: 'column', justifyContent: 'space-evenly'}}>
@@ -76,11 +77,6 @@ export const MainNews = (props) => {
           <button onClick={handleNavigate} className="btn btn-outline-danger btn-lg" style={{ borderRadius: '2rem', fontWeight: 500, maxWidth: 150, fontSize: 16 }}>Ler mais</button>
         </Col>
       </Row>
-      )
-    }
-    return (
-      <>
-        {renderMainNews()}
       </>
     );
   }

@@ -4,7 +4,7 @@ import { NewsService, PhotoService, RelationPhotoService } from "../../../../ser
 import {FaSearch} from 'react-icons/fa'
 import {GrEdit} from "react-icons/gr";
 import {FiTrash2} from 'react-icons/fi'
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { RegisterNews } from "./newNews";
 export const News = () => {
     const api = process.env.REACT_APP_API_BASE_URL;
@@ -98,6 +98,9 @@ const CardContet = (props) => {
       setClicked(!clicked)
     }
 
+    // const clickEdit = (event) => {
+      
+    // }
     console.log(path)
     return (
       <Col onClick={handleClicked} className="d-flex mt-5" style={{border: 'none', background: '#E2E8F082', borderRadius: '2rem', cursor: 'pointer'}}>
@@ -109,7 +112,7 @@ const CardContet = (props) => {
         <Col xs={3} className="d-flex w-25" style={{justifyContent: 'space-evenly', alignContent: 'center', alignItems: 'center'}}>
             {clicked && 
             <>
-              <GrEdit className="p-2" style={{borderRadius: '0.3rem', fontSize: 50, background: '#091B361A', fontColor: '#091B36', cursor: 'pointer'}}/>
+              <GrEdit onClick={clickEdit} className="p-2" style={{borderRadius: '0.3rem', fontSize: 50, background: '#091B361A', fontColor: '#091B36', cursor: 'pointer'}}/>
               <FiTrash2 className="p-2" style={{borderRadius: '0.3rem', fontSize: 50, background: '#D6000729', color: '#D60007', cursor: 'pointer'}}/>
             </>}
         </Col>

@@ -37,6 +37,10 @@ export const NewsService = {
             })
 
             console.log(responseFoto)
+
+            const responseRelation = await api.post('/relation/registerRelation', { id_news_fk: response.data.id, id_foto_fk: responseFoto.data.foto.id })
+
+            console.log(responseRelation)
         } catch (error) {
             console.error(error)
         }

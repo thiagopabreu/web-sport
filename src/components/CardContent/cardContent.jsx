@@ -44,7 +44,8 @@ export const CardContent = (props) => {
                     id: one_news.id,
                     titulo: one_news.titulo,
                     data_publicacao: one_news.data_publicacao,
-                    id_categoria_fk: one_news.id_categoria_fk
+                    id_categoria_fk: one_news.id_categoria_fk,
+                    id_foto_fk: relationResponse.relationPhoto.id_foto_fk
                 });
             }
 
@@ -62,7 +63,7 @@ export const CardContent = (props) => {
         return news.map((item, index) => (
             <Col key={index} xs={12} sm={6} md={6} lg={6} className="mb-3">  
                 <Card className="d-flex flex-row" style={{border: 'none'}}>
-                    <Card.Img variant="top" src={`${api}photo/getPhoto/${item.id}`} style={{width: "40%", height: "40%"}}/>
+                    <Card.Img variant="top" src={`${api}photo/getPhoto/${item.id_foto_fk}`} style={{width: "40%", height: "40%"}}/>
                     <Card.Body className="p-0 mx-3">
                         <p className="card-date p-0 m-0">{item.data_publicacao}</p>
                         <Card.Title>{item.titulo}</Card.Title>
