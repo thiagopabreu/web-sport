@@ -98,9 +98,9 @@ const CardContet = (props) => {
       setClicked(!clicked)
     }
 
-    // const clickEdit = (event) => {
-      
-    // }
+    const clickEdit = (event) => {
+      console.log('entrei aqui')
+    }
     console.log(path)
     return (
       <Col onClick={handleClicked} className="d-flex mt-5" style={{border: 'none', background: '#E2E8F082', borderRadius: '2rem', cursor: 'pointer'}}>
