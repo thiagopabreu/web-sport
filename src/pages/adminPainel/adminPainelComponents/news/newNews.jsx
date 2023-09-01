@@ -1,6 +1,6 @@
 import { Editor } from "draft-js"
 import { useEffect, useState } from "react"
-import { Col, Row } from "react-bootstrap"
+import { Button, Col, Dropdown, Form, FormControl, FormGroup, Row } from "react-bootstrap"
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 
@@ -9,29 +9,98 @@ import 'froala-editor/css/froala_editor.pkgd.min.css';
 import FroalaEditorComponent from 'react-froala-wysiwyg';
 import FroalaEditor from "react-froala-wysiwyg";
 import FroalaEditorImg from "react-froala-wysiwyg/FroalaEditorImg";
+import JoditEditor from "jodit-react";
+import { CategoriesService, NewsService } from "../../../../services/services";
+import { Drop } from "@phosphor-icons/react";
 
-export const RegisterNews = () => {
+export const RegisterNews = (props) => {
     const [editor, setEditor] = useState('')
     const [ model, setModel] = useState('')
-    
+    const [title, setTitle] = useState('')
+    const [subTitle, setSubTitle] = useState('')
+    const [data, setData] = useState("")
+    const [file, setFile] = useState("")
+    const [categories, setCategories] = useState([])
+    const [categorySelect, setCategorySelect] = useState({nome: 'Categorias'})
     useEffect(() => {
-        console.log(editor)
-    }, [editor])
-    return(
-        <Col xs={10} className=" d-flex flex-column px-5" style={{marginTop: '3rem'}} >
-            <ReactQuill theme="snow" value={editor} onChange={setEditor} />
+        fetchCategoriesData()
+    }, [])
 
-            <div id="editor">
-            <FroalaEditorComponent
-  tag='textarea'
-  config={{
-    placeholderText: 'Edit Your Content Here!',
-    charCounterCount: false
-  }}
-  model={editor}
-  onModelChange={setEditor}
-/>
-            </div>
+    const fetchCategoriesData = async () => {
+        const response = await CategoriesService.getCategories()
+        console.log(response)
+        setCategories(response)
+    }
+    const handleFileChange = (e) => {
+        const selectedFile = e.target.files[0];
+        setFile(selectedFile);
+    }
+    const registerNews = async (e) => {
+        const response = await NewsService.registerNews({
+            "titulo": title,
+            "sub_conteudo": subTitle,
+            "id_categoria_fk": categorySelect.id,
+            "conteudo": editor,
+            "file": file
+        })
+
+        console.log(response)
+    }
+    console.log(file)
+    return(
+        <Col xs={10} className=" d-flex flex-row px-5" style={{marginTop: '3rem'}} >
+            <Col style={{flex: 2}}>
+                <Form>
+                    <Form.Group controlId="title">
+                        <Form.Label>Titulo</Form.Label>
+                        <FormControl 
+                        type="text"
+                        value={title}
+                        onChange={(e) => setTitle(e.target.value)} />
+
+                        
+                    </Form.Group>
+                    <Form.Group controlId="sub">
+                        <Form.Label>Sub-titulo</Form.Label>
+                        <FormControl 
+                        type="text"
+                        value={subTitle}
+                        onChange={(e) => setSubTitle(e.target.value)} />
+
+                        
+                    </Form.Group>
+                    <JoditEditor className="mt-5" value={editor} onChange={newContent => setEditor(newContent)}  />
+                </Form>
+            </Col>
+            <Col className="px-5" style={{flex: 1, justifyContent: 'center', alignContent: 'center', alignItems: 'center'}}>
+                <Form>
+
+                    <FormGroup controlId="imagem">
+                        <Form.Label>Imagem</Form.Label>
+                        <FormControl 
+                        type="file"
+                        onChange={handleFileChange}
+                        ></FormControl>
+                    </FormGroup>
+
+                    <Dropdown className="mt-4">
+                        <Dropdown.Toggle style={{background: '#091B36', border: 'none'}}>
+                            {categorySelect.nome}
+                        </Dropdown.Toggle>
+                        <Dropdown.Menu>
+                            {categories.map((item) => (
+                                <Dropdown.Item onClick={(e) => {
+                                    setCategorySelect(item)
+                                }}>
+                                    {item.nome}
+                                </Dropdown.Item>
+                            ))}
+                        </Dropdown.Menu>
+                    </Dropdown>
+                    <Button className="mt-4" onClick={(e) => registerNews(e)} style={{background: '#091B36', border: 'none'}}>Publicar</Button>
+                </Form>
+            </Col>
+            
         </Col>
     )
 

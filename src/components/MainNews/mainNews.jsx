@@ -24,8 +24,9 @@ export const MainNews = (props) => {
     }
     const fetchData = async () => {
       const response = await NewsService.getNews();
-      
-        const dateOriginal = response.news[response.news.length - 1].data_publicacao
+      console.log(response)
+        if(response.news.length > 1) {
+          const dateOriginal = response.news[response.news.length - 1].data_publicacao
         const dateHourObject = new Date(dateOriginal)
         const day = dateHourObject.getUTCDate();
         const month = dateHourObject.getUTCMonth();
@@ -58,9 +59,12 @@ export const MainNews = (props) => {
         const photo = await PhotoService.getPhoto(relation.relationPhoto.id_foto_fk);
         setPath(photo.photo.caminho);
     }
+        }
     }
     return (
-      <Row className={isMobile ? "flex-column align-content-center justify-content-center align-items-center" : "d-flex flex-row"} style={{flexWrap: "nowrap"}}>
+      (news.length > 0) && 
+      <>
+        <Row className={isMobile ? "flex-column align-content-center justify-content-center align-items-center" : "d-flex flex-row"} style={{flexWrap: "nowrap"}}>
         <Col xs={12} md={6} className="img-container d-flex flex-column align-items-center justify-content-center">
           <img src={`${api}photo/readPhoto/${path}`} width={640} height={400} alt="Imagem de exemplo" className="img-fluid" />
         </Col>
@@ -69,9 +73,10 @@ export const MainNews = (props) => {
           <h3 style={{ fontWeight: 400, color: '#091B36' }}>{news.titulo}</h3>
           <p style={{ fontWeight: 400, color: '#091B36' }}>{news.sub_conteudo}</p>
           <button onClick={handleNavigate} className="btn btn-outline-danger btn-lg" style={{ borderRadius: '2rem', fontWeight: 500, maxWidth: 150, fontSize: 16 }}>Ler mais</button>
-      </Col>
+        </Col>
       </Row>
-    );
+      </>
+    )
   }
 
   

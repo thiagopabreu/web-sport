@@ -90,6 +90,7 @@ const CardContet = (props) => {
   
     const fetchData = async () => {
       const relation = await RelationPhotoService.getRelation(item.id)
+      console.log(relation)
       const photo = await PhotoService.getPhoto(relation.relationPhoto.id_foto_fk)
       setPath(photo.photo.caminho)
     }
