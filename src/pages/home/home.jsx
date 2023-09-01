@@ -1,15 +1,29 @@
-import { Container, Row } from "react-bootstrap"
+import { Col, Container, Row } from "react-bootstrap"
 import { Header } from "../../components/Header/header"
 import { SubHeader } from "../../components/SubHeader/subHeader"
 import { Main } from "../../components/Main/main"
 import { CardsNews } from "../../components/CardNews/cardsNews"
 import { Footer } from "../../components/Footer/footer"
+import { useEffect, useState } from "react"
+import { NewsService } from "../../services/services"
+import { useDispatch, useSelector } from "react-redux"
+import { fetchNews, selectNews } from "../../redux/features/news"
+import axios from "axios"
 
 
 export const Home = () => {
 
-    
-
+    const dispatch = useDispatch()
+    const [news, setNews] = useState([])
+    useEffect(() => {
+        fetchData()
+      }, [])
+      
+    const fetchData = async () => {
+        const response = await NewsService.getNews();
+        console.log(response.news)
+        setNews(response.news[response.news.length - 1])
+    }
     return (
         <Container className="d-flex flex-column min-vh-100" fluid style={{fontFamily: 'Poppins'}}>
             <Row>
@@ -20,12 +34,13 @@ export const Home = () => {
                     <Row>
                         <SubHeader />
                     </Row>
-                    <Row>
+                    <Row fluid>
                         <Main />
                     </Row>
-                    <Row className="mt-5 mb-5">
-                        <CardsNews />
-                        <CardsNews className="mb-5"/>
+                    <Row fluid className="mt-5 mb-5">
+                        <Col>
+                            <CardsNews className="mb-5"/>
+                        </Col>
                     </Row>
                 </Container>
             </Row>

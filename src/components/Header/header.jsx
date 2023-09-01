@@ -19,7 +19,7 @@ export const Header = () => {
     <Navbar collapseOnSelect expand="lg" style={{backgroundColor:'#091B36' }}>
     <Container fluid>
       <Nav>
-        <Navbar.Brand href="/" style={{color: '#FFFFFF'}}><Image src='LOGO.png' style={{width: '12.5rem', marginLeft: '2rem'}} /></Navbar.Brand>
+        <Navbar.Brand href="/" style={{color: '#FFFFFF'}}><Image src='../LOGO.png' style={{width: '12.5rem', marginLeft: '2rem'}} /></Navbar.Brand>
       </Nav>
       <Nav>
       <Navbar.Toggle aria-controls="responsive-navbar-nav" style={{color: 'white'}}/>
@@ -27,7 +27,7 @@ export const Header = () => {
         <Nav>
           <Nav.Link href="/" style={navLink} className={ (location.pathname == '/') ? 'mx-4 underline-small' : 'mx-4'}>Ínicio</Nav.Link>
           <Nav.Link href="/noticias" style={navLink} className={ (location.pathname == '/noticias') ? 'mx-4 underline-small' : 'mx-4'}>Notícias</Nav.Link>
-          <Nav.Link href="/campeonatos" style={navLink} className={ (location.pathname == '/camponatos') ? 'mx-4 underline-small' : 'mx-4'}>Campeonatos</Nav.Link>
+          <Nav.Link href="/campeonatos" style={navLink} className={ (location.pathname == '/campeonatos') ? 'mx-4 underline-small' : 'mx-4'}>Campeonatos</Nav.Link>
           <Nav.Link href="/eventos" style={navLink} className={ (location.pathname == '/eventos') ? 'mx-4 underline-small' : 'mx-4'}>Eventos</Nav.Link>
         </Nav>
       </Navbar.Collapse>
