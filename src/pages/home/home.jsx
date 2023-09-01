@@ -23,7 +23,7 @@ export const Home = () => {
       
     const fetchData = async () => {
         const response = await NewsService.getNews();
-        console.log(response.news)
+
         setNews(response.news[response.news.length - 1])
     }
     return (
