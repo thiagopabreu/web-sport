@@ -24,24 +24,37 @@ export const NewsService = {
             "titulo": object.titulo,
             "sub_conteudo": object.sub_conteudo,
             "id_categoria_fk": object.id_categoria_fk,
-            "conteudo": object.conteudo,
-        }
+            "conteudo": object.conteudo        }
 
+        const file = object.file
         try {
             const response = await api.post('/news/registerNews', news)
-            const formData = new FormData()
-            formData.append('file', object.file)
-
-            const responsePhoto = await api.post('/photo/registerUpload', formData, {
+            
+            const responseFoto = await api.post('/photo/registerUpload', {file: file}, {
                 headers: {
                     'Content-Type': 'multipart/form-data'
                 }
             })
-            console.log(responsePhoto)
-            const responseRelation = await api.post('/relation/registerRelation', {id_news_fk: response.data.id, id_foto_fk: responsePhoto.data.foto.id})
+
+            console.log(responseFoto)
         } catch (error) {
             console.error(error)
         }
+        // try {
+        //     const response = await api.post('/news/registerNews', news)
+        //     const formData = new FormData()
+        //     formData.append('file', object.file)
+
+        //     const responsePhoto = await api.post('/photo/registerUpload', formData, {
+        //         headers: {
+        //             'Content-Type': 'multipart/form-data'
+        //         }
+        //     })
+        //     console.log(responsePhoto)
+        //     const responseRelation = await api.post('/relation/registerRelation', {id_news_fk: response.data.id, id_foto_fk: responsePhoto.data.foto.id})
+        // } catch (error) {
+        //     console.error(error)
+        // }
     }
 }
 

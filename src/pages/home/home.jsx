@@ -9,12 +9,14 @@ import { NewsService } from "../../services/services"
 import { useDispatch, useSelector } from "react-redux"
 import { fetchNews, selectNews } from "../../redux/features/news"
 import axios from "axios"
+import { useMediaQuery } from "react-responsive"
 
 
 export const Home = () => {
 
     const dispatch = useDispatch()
     const [news, setNews] = useState([])
+    
     useEffect(() => {
         fetchData()
       }, [])

@@ -54,6 +54,7 @@ export const SearchBar = (props) => {
 
     const handleCloseAllCategorys = () => {
         setSelectedOptions([])
+        props.onSelectedCategoriesChange([])
     }
     
 

@@ -25,16 +25,17 @@ export const MainNews = (props) => {
     const fetchData = async () => {
       const response = await NewsService.getNews();
       console.log(response)
-        if(response.news.length > 1) {
+      console.log(response.news.length)
+        if(response.news.length > 0) {
           const dateOriginal = response.news[response.news.length - 1].data_publicacao
-        const dateHourObject = new Date(dateOriginal)
-        const day = dateHourObject.getUTCDate();
-        const month = dateHourObject.getUTCMonth();
-        const formatedMonth = month.toString().padStart(2, '0');
-        const year = dateHourObject.getUTCFullYear();
+          const dateHourObject = new Date(dateOriginal)
+          const day = dateHourObject.getUTCDate();
+          const month = dateHourObject.getUTCMonth();
+          const formatedMonth = month.toString().padStart(2, '0');
+          const year = dateHourObject.getUTCFullYear();
 
-        const formatedDate = `${day}/${formatedMonth}/${year}`
-        response.news[response.news.length - 1].data_publicacao = formatedDate
+          const formatedDate = `${day}/${formatedMonth}/${year}`
+          response.news[response.news.length - 1].data_publicacao = formatedDate
     //   response.news.forEach((item, index) => {
     //     const dateOriginal = item.data_publicacao
     //     const dateHourObject = new Date(dateOriginal)
@@ -56,27 +57,32 @@ export const MainNews = (props) => {
         console.log(lastNewsItem);
         const relation = await RelationPhotoService.getRelation(lastNewsItem.id);
         console.log(relation);
-        const photo = await PhotoService.getPhoto(relation.relationPhoto.id_foto_fk);
-        setPath(photo.photo.caminho);
+        setPath(relation.relationPhoto.id_foto_fk);
     }
         }
     }
-    return (
-      (news.length > 0) && 
-      <>
+
+    console.log(path)
+    const renderMainNews = () => {
+      return (
         <Row className={isMobile ? "flex-column align-content-center justify-content-center align-items-center" : "d-flex flex-row"} style={{flexWrap: "nowrap"}}>
         <Col xs={12} md={6} className="img-container d-flex flex-column align-items-center justify-content-center">
-          <img src={`${api}photo/readPhoto/${path}`} width={640} height={400} alt="Imagem de exemplo" className="img-fluid" />
+          <img src={`${api}photo/getPhoto/${path}`} width={640} height={400} alt="Imagem de exemplo" className="img-fluid" />
         </Col>
-        <Col xs={12} md={6} className={isMobile && "mt-5 w-100"}>
+        <Col xs={12} md={6} className={isMobile && "mt-5 w-100"} style={{display: 'flex', flexDirection: 'column', justifyContent: 'space-evenly'}}>
           <p style={{ fontWeight: 400, fontSize: 14, color: '#828282' }}>{news.data_publicacao}</p>
           <h3 style={{ fontWeight: 400, color: '#091B36' }}>{news.titulo}</h3>
           <p style={{ fontWeight: 400, color: '#091B36' }}>{news.sub_conteudo}</p>
           <button onClick={handleNavigate} className="btn btn-outline-danger btn-lg" style={{ borderRadius: '2rem', fontWeight: 500, maxWidth: 150, fontSize: 16 }}>Ler mais</button>
         </Col>
       </Row>
+      )
+    }
+    return (
+      <>
+        {renderMainNews()}
       </>
-    )
+    );
   }
 
   

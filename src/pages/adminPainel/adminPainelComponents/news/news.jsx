@@ -92,14 +92,16 @@ const CardContet = (props) => {
       const relation = await RelationPhotoService.getRelation(item.id)
       console.log(relation)
       const photo = await PhotoService.getPhoto(relation.relationPhoto.id_foto_fk)
-      setPath(photo.photo.caminho)
+      setPath(relation.relationPhoto.id_foto_fk)
     }
     const handleClicked = (event) => {
       setClicked(!clicked)
     }
+
+    console.log(path)
     return (
       <Col onClick={handleClicked} className="d-flex mt-5" style={{border: 'none', background: '#E2E8F082', borderRadius: '2rem', cursor: 'pointer'}}>
-        <Image xs={4} style={{borderRadius: '2rem 0 0 2rem', width: '22%'}} src={`${api}photo/readPhoto/${path}`} />
+        <Image xs={4} style={{borderRadius: '2rem 0 0 2rem', width: '22%'}} src={`${api}photo/getPhoto/${path}`} />
         <Col xs={5} className="d-flex flex-column mx-5" style={{justifyContent: 'center', alignContent: 'center', alignItems: 'flex-start'}}>
           <p className="p-0 m-0 " style={{fontWeight: 500, fontSize: 20, color: '#213249' }}>{item.titulo}</p>
           <p className="p-0 m-0 pt-2" style={{fontWeight: 400, fontSize: 16, color: '#828282' }}>{days}</p>

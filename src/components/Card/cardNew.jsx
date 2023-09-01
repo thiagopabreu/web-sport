@@ -10,6 +10,7 @@ export const CardNew = (props) => {
     const location = useLocation();
     const [path, setPath] = useState('')
     const {news} = props
+    const api = process.env.REACT_APP_API_BASE_URL
     console.log(news)
     useEffect(() => {
         fetchData()
@@ -30,7 +31,7 @@ export const CardNew = (props) => {
     return(
         <Card style={{ width: "16rem", border: "none", marginBottom: "1rem" }}>
       {/* Added marginBottom style to create spacing */}
-      {/* <Card.Img variant="top" src={`${api}photo/readPhoto/${path}`} /> */}
+      <Card.Img variant="top" src={`${api}photo/readPhoto/${path}`} />
       <Card.Body className="px-0">
         <Card.Text style={{ color: "#828282", fontSize: 14, fontWeight: 400 }}>{news.data_publicacao}</Card.Text>
         <Card.Text style={{ color: "#213249", fontWeight: 400, fontSize: 16 }}>

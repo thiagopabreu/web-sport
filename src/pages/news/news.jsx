@@ -37,7 +37,7 @@ export const News = () => {
                 </Container>
             </Row>
 
-            <Row>
+            <Row className="my-5">
                 <Col xs={12} md={{span: 8, offset: 2}} className="d-flex flex-row flew-wrap justify-content-between">
                     <CardContent searchItem={searchItem} selectedCategories={selectedCategories} />
                 </Col>
