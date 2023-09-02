@@ -7,6 +7,7 @@ import {FiLogOut } from 'react-icons/fi'
 
 import { NewsService, PhotoService, RelationPhotoService } from "../../services/services";
 import { News } from "./adminPainelComponents/news/news";
+import { Events } from "./adminPainelComponents/events/events";
 
 export const AdminPainel = (props) => {
   console.log('entrei')
@@ -73,7 +74,7 @@ export const AdminPainel = (props) => {
             
             <Col xs={10} className=" d-flex flex-column px-5" style={{marginTop: '3rem'}} >
                 {(newsPage) && <News />}
-                {(eventsPage) && <></>}
+                {(eventsPage) && <Events />}
                 {(championshipPage) && <> </>}
             </Col>
       </div>

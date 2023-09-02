@@ -20,9 +20,8 @@ export const CardNew = (props) => {
     
         const relation = await RelationPhotoService.getRelation(news.id);
         const photo = await PhotoService.getPhoto(relation.relationPhoto.id_foto_fk);
-        console.log(photo.photo.caminho)
-        console.log(news.titulo.length)
-        setPath(photo.photo.caminho)
+        setPath(relation.relationPhoto.id_foto_fk)
+        console.log(path)
     }
     const handleNavigate = (event) => {
       navigate(`/noticia/${news.id}`)
@@ -31,7 +30,7 @@ export const CardNew = (props) => {
     return(
         <Card style={{ width: "16rem", border: "none", marginBottom: "1rem" }}>
       {/* Added marginBottom style to create spacing */}
-      <Card.Img variant="top" src={`${api}photo/readPhoto/${path}`} />
+      <Card.Img variant="top" src={`${api}photo/getPhoto/${path}`} />
       <Card.Body className="px-0">
         <Card.Text style={{ color: "#828282", fontSize: 14, fontWeight: 400 }}>{news.data_publicacao}</Card.Text>
         <Card.Text style={{ color: "#213249", fontWeight: 400, fontSize: 16 }}>

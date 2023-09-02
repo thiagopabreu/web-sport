@@ -44,21 +44,22 @@ export const NewsService = {
         } catch (error) {
             console.error(error)
         }
-        // try {
-        //     const response = await api.post('/news/registerNews', news)
-        //     const formData = new FormData()
-        //     formData.append('file', object.file)
+    },
+    updateNews: async(object, id) => {
+        console.log(object, id)
+        try {
+            const updateNews = await api.put(`/news/updateNews/${id.id_news_fk}`, object)
+            console.log(updateNews)
 
-        //     const responsePhoto = await api.post('/photo/registerUpload', formData, {
-        //         headers: {
-        //             'Content-Type': 'multipart/form-data'
-        //         }
-        //     })
-        //     console.log(responsePhoto)
-        //     const responseRelation = await api.post('/relation/registerRelation', {id_news_fk: response.data.id, id_foto_fk: responsePhoto.data.foto.id})
-        // } catch (error) {
-        //     console.error(error)
-        // }
+            const updatePhoto = await api.put(`/photo/updatePhoto/${id.id_foto_fk}`, {file: object.file}, {
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                }
+            })
+            console.log(updatePhoto)
+        } catch (error) {
+            console.error(error)
+        }
     }
 }
 

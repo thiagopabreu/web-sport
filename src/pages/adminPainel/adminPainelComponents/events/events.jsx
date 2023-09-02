@@ -5,9 +5,8 @@ import {FaSearch} from 'react-icons/fa'
 import {GrEdit} from "react-icons/gr";
 import {FiTrash2} from 'react-icons/fi'
 import { useLocation, useNavigate } from "react-router-dom";
-import { RegisterNews } from "./newNews";
 import JoditEditor from "jodit-react";
-export const News = () => {
+export const Events = () => {
     const api = process.env.REACT_APP_API_BASE_URL;
     const [news, setNews] = useState([])
     const [addNews, setAddNews] = useState(false)
@@ -40,7 +39,7 @@ export const News = () => {
     }
     return (
 
-            (addNews) ? <RegisterNews setAddNews={setAddNews} /> 
+            (addNews) ? <></>
             
             : 
           <Row className="d-flex flex-row mt-5 mx-5 px-5" style={{justifyContent: 'space-between'}}>
