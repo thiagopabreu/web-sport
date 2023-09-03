@@ -1,1 +1,20 @@
-# Estou fazendo a parte dos eventos
+# Estou fazendo a parte dos eventos - ✓
+
+- Evento ✓
+    • Fazer o update do evento ✓
+    • Fazer o delete do evento ✓
+- Campeonato ✓
+    • Separar por Campeonato ✓
+    • Update do Campeonato ✓
+    • Criar Jogo ✓
+    • Delete do Campeonato ✓
+    • Update do Campeonato ✓
+    • Criar um Campeonato ✓
+
+- Funcionalidade admin para voltar para o lado do client
+
+- Client
+    • Responsividade da data da home
+
+
+• Extra: ver responsividade geral

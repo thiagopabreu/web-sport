@@ -4,19 +4,58 @@ import {AiOutlineCalendar, AiOutlineClockCircle} from 'react-icons/ai'
 import {GrLocation} from 'react-icons/gr'
 import { ChampionshipService, GamesService, RoundsService } from "../../services/services"
 import { CampeonatoDropdown } from "../CampeonatoDropdown/campeonatoDropdown"
-export const ChampionshipTable = ({campeonato}) => {
+export const ChampionshipTable = (props) => {
+
+
 
     const [rodadas, setRodadas] = useState([]);
     const [jogos, setJogos] = useState([]);
     const [selectedRodada, setSelectedRodada] = useState();
-
+    const [rowSelect, setRowSelect] = useState(-1)
+    
     useEffect(() => {
         fetchDataRounds()
-    }, [campeonato.id])
+    }, [props.campeonato.id])
 
     useEffect(() => {
         fetchDataGames()
-    }, [selectedRodada])
+        console.log(rowSelect)
+        console.log(selectedRodada)
+        if(props.onChangeRodada) props.onChangeRodada(selectedRodada)
+    }, [selectedRodada, rowSelect])
+
+    useEffect(() => {
+        fetchDataGames()
+    }, [props.trigger])
+    useEffect(() => {
+        if(props.selectRow) props.selectRow(rowSelect)
+    }, [rowSelect])
+    useEffect(() => {
+        if(props.setVisitantePlacar && props.setMandantePlacar && props.setVisitante && props.setMandante && props.setDate && props.setLocal && props.setHour) {
+            if(rowSelect >-1) {
+                console.log(jogos[rowSelect].placar_visitante)
+                const date = jogos[rowSelect].data
+                const partes = date.split('/')
+                const dataFormatada = `${partes[2]}-${partes[1]}-${partes[0]}`;
+                props.setVisitante(jogos[rowSelect].visitante)
+                props.setMandante(jogos[rowSelect].mandante)
+                props.setDate(dataFormatada)
+                props.setLocal(jogos[rowSelect].local)
+                props.setHour(jogos[rowSelect].hora)
+                props.setVisitantePlacar(jogos[rowSelect].placar_visitante)
+                props.setMandantePlacar(jogos[rowSelect].placar_mandante)
+            } else {
+                props.setVisitante('')
+                props.setMandante('')
+                props.setDate('')
+                props.setLocal('')
+                props.setHour('')
+                props.setVisitantePlacar(0)
+                props.setMandantePlacar(0)
+            }
+            
+        }
+    }, [rowSelect])
 
     const fetchDataGames = async () => {
         const response = await GamesService.getGameByRoundId(selectedRodada)
@@ -24,7 +63,11 @@ export const ChampionshipTable = ({campeonato}) => {
         response.map((jogo) => {
             rodadas.map((rodada) => {
                 if(rodada.id == jogo.id_rodada_fk) {
-                    if(rodada.id_campeonato_fk == campeonato.id) {
+                    if(rodada.id_campeonato_fk == props.campeonato.id) {
+                        const date = jogo.data
+                        const partes = date.split('-')
+                        const dataFormatada = `${partes[2]}/${partes[1]}/${partes[0]}`
+                        jogo.data = dataFormatada
                         jogoArray.push(jogo)
                     }
                 }
@@ -34,7 +77,7 @@ export const ChampionshipTable = ({campeonato}) => {
     }
 
     const fetchDataRounds = async () => {
-        const response = await RoundsService.getRoundByChampionshipId(campeonato.id)
+        const response = await RoundsService.getRoundByChampionshipId(props.campeonato.id)
         setRodadas(response)
         console.log(response)
 
@@ -42,7 +85,7 @@ export const ChampionshipTable = ({campeonato}) => {
         console.log(responseRound)
         let first = false
         responseRound.map((item) => {
-            if(campeonato.id == item.id_campeonato_fk && !first) {
+            if(props.campeonato.id == item.id_campeonato_fk && !first) {
                 setSelectedRodada(item.id)
                 first = true 
             }
@@ -50,13 +93,23 @@ export const ChampionshipTable = ({campeonato}) => {
     }
 
     const filterJogos = jogos.filter(jogo => jogo.id_rodada_fk === selectedRodada)
-
+    const handleClick = (e, index, jogo) => {
+        if(rowSelect == index) {
+            setRowSelect(-1)
+        } else {
+            setRowSelect(index)
+            if(props.setSelectJogo){
+                props.setSelectJogo(jogo)
+            }
+        }
+        
+    }
     return (
                             <>
                                 <Row className="mb-5" style={{justifyContent: 'space-between'}}>
                                     <Col style={{display: 'flex', alignContent: 'center', alignItems: 'center'}}>
                                         <IconSoccerBall />
-                                        <h5 className="m-5" style={{fontSize: 36, fontWeight: 500}}>{campeonato.nome_campeonato}</h5>
+                                        <h5 className="m-5" style={{fontSize: 36, fontWeight: 500}}>{props.campeonato.nome_campeonato}</h5>
                                     </Col>
                                     <CampeonatoDropdown rodadas={rodadas} selectRodada={selectedRodada} onSelectRodada={setSelectedRodada}/>
                                 </Row>
@@ -73,14 +126,14 @@ export const ChampionshipTable = ({campeonato}) => {
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            {filterJogos.map(jogo => (
-                                                <tr>
-                                                    <td>{jogo.data}</td>
-                                                <td>{jogo.hora}</td>
-                                                <td>{jogo.local}</td>
-                                                <td>{jogo.mandante}</td>
-                                                <td>{jogo.placar_mandante} x {jogo.placar_visitante}</td>
-                                                <td>{jogo.visitante}</td>
+                                            {filterJogos.map((jogo, index) => (
+                                                <tr onClick={(e) => handleClick(e, index, jogo)} style={(rowSelect === index) ? {backgroundColor: 'red'} : {cursor: 'pointer'}}>
+                                                    <td style={(rowSelect === index) ? {backgroundColor: '#e4bfbf'} : {cursor: 'pointer'}}>{jogo.data}</td>
+                                                    <td style={(rowSelect === index) ? {backgroundColor: '#e4bfbf'} : {cursor: 'pointer'}}>{jogo.hora}</td>
+                                                    <td style={(rowSelect === index) ? {backgroundColor: '#e4bfbf'} : {cursor: 'pointer'}}>{jogo.local}</td>
+                                                    <td style={(rowSelect === index) ? {backgroundColor: '#e4bfbf'} : {cursor: 'pointer'}}>{jogo.mandante}</td>
+                                                    <td style={(rowSelect === index) ? {backgroundColor: '#e4bfbf'} : {cursor: 'pointer'}}>{jogo.placar_mandante} x {jogo.placar_visitante}</td>
+                                                    <td style={(rowSelect === index) ? {backgroundColor: '#e4bfbf'} : {cursor: 'pointer'}}>{jogo.visitante}</td>
                                                 </tr>
                                             ))}
                                             {/* {gameXround.map((item) => (

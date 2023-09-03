@@ -8,6 +8,8 @@ import {FiLogOut } from 'react-icons/fi'
 import { NewsService, PhotoService, RelationPhotoService } from "../../services/services";
 import { News } from "./adminPainelComponents/news/news";
 import { Events } from "./adminPainelComponents/events/events";
+import { Championship } from "./adminPainelComponents/championship/championship";
+import { useNavigate } from "react-router-dom";
 
 export const AdminPainel = (props) => {
   console.log('entrei')
@@ -15,9 +17,10 @@ export const AdminPainel = (props) => {
   const [newsPage, setNewsPage] = useState(true)
   const [eventsPage, setEventsPage] = useState(false)
   const [championshipPage, setChampionshipPage] = useState(false)
+  const navigate = useNavigate();
   const handleLogout = () => {
     Cookies.set('auth', 'false')
-    props.setIsLoggedIn(false)
+    navigate('/')
   };
   const renderIcon = (icon) => {
     return (icon)
@@ -37,11 +40,13 @@ export const AdminPainel = (props) => {
         setEventsPage(false)
         setChampionshipPage(false)
         setNewsPage(true)
+
       }
       if(index === 1) {
         setChampionshipPage(false)
         setNewsPage(false)
         setEventsPage(true)
+
       }
       if(index === 2 ) {
         setNewsPage(false)
@@ -75,7 +80,7 @@ export const AdminPainel = (props) => {
             <Col xs={10} className=" d-flex flex-column px-5" style={{marginTop: '3rem'}} >
                 {(newsPage) && <News />}
                 {(eventsPage) && <Events />}
-                {(championshipPage) && <> </>}
+                {(championshipPage) && <Championship />}
             </Col>
       </div>
     )

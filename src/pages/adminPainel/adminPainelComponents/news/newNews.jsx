@@ -12,6 +12,7 @@ import FroalaEditorImg from "react-froala-wysiwyg/FroalaEditorImg";
 import JoditEditor from "jodit-react";
 import { CategoriesService, NewsService } from "../../../../services/services";
 import { Drop } from "@phosphor-icons/react";
+import { AiOutlineArrowLeft } from "react-icons/ai";
 
 export const RegisterNews = (props) => {
     const [editor, setEditor] = useState('')
@@ -45,10 +46,15 @@ export const RegisterNews = (props) => {
         })
 
         console.log(response)
+
+        window.location.reload();
     }
     console.log(file)
     return(
         <Col xs={10} className=" d-flex flex-row px-5" style={{marginTop: '3rem'}} >
+            <Col style={{maxWidth: '7%'}}>
+                <Button onClick={(e) => props.setAddNews(false)} style={{background: '#091B36', border: 'none'}}><AiOutlineArrowLeft /></Button>
+            </Col>
             <Col style={{flex: 2}}>
                 <Form>
                     <Form.Group controlId="title">

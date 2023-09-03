@@ -7,30 +7,51 @@ import {FiTrash2} from 'react-icons/fi'
 import { useLocation, useNavigate } from "react-router-dom";
 import { RegisterNews } from "./newNews";
 import JoditEditor from "jodit-react";
-export const News = () => {
+import { Users } from "@phosphor-icons/react";
+export const News = (props) => {
     const api = process.env.REACT_APP_API_BASE_URL;
     const [news, setNews] = useState([])
     const [addNews, setAddNews] = useState(false)
     const [paths, setPaths] = useState([])
     const [currentPage, setCurrentPage] = useState(1)
     const [trigger, setTrigger] = useState(false)
+    const [triggerEmpty, setTriggetEmpity] = useState(false)
+    const [searchTerm, setSearchTerm] = useState("");
+    const [searchResults, setSearchResults] = useState([]);
     const navigate = useNavigate()
     const itemsPerPage = 4
+    const [indexOfLastItem, setIndexOfLastItem] = useState(currentPage * itemsPerPage)
+    const [indexOfFirstItem, setIndexOfFirstItem] = useState(indexOfLastItem - itemsPerPage)
+    const [currentItens, setCurrentItens] = useState([])
+    // const indexOfLastItem = currentPage * itemsPerPage;
+    // const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+    // const currentItens = news.slice(indexOfFirstItem, indexOfLastItem)
     useEffect(() => {
       fetchData()
-    }, [])
+    }, [triggerEmpty])
+
     const fetchData = async () => {
       const response = await NewsService.getNews()
   
       response.news.reverse()
       let photos = []
       setNews(response.news)
-  
+      console.log(response.news)
+      const filteredNews = response.news.filter((item) => {
+        // Convertemos o título da notícia e o termo de pesquisa para letras minúsculas para tornar a pesquisa sem distinção entre maiúsculas e minúsculas
+        const lowerCaseTitle = item.titulo.toLowerCase();
+        const lowerCaseSearchTerm = searchTerm.toLowerCase();
+        console.log(item)
+        // Verificamos se o título da notícia contém o termo de pesquisa
+        return lowerCaseTitle.includes(lowerCaseSearchTerm);
+      });
+      // Atualize o estado de searchResults com os resultados da pesquisa
+      console.log(filteredNews)
+      setSearchResults(filteredNews);
+      setCurrentItens(filteredNews)
+      setTrigger(!trigger)
     }
-    console.log(paths)
-    const indexOfLastItem = currentPage * itemsPerPage;
-    const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-    const currentItens = news.slice(indexOfFirstItem, indexOfLastItem)
+
     const paginate = (pageNumber) => {
       setCurrentPage(pageNumber)
       setTrigger(!trigger) 
@@ -38,6 +59,15 @@ export const News = () => {
     const handleAdicionar = () => {
       setAddNews(true)
     }
+    const handleSearchTermChange = (event) => {
+      setSearchTerm(event.target.value);
+    };
+
+    const handleSearch = async (e) => {
+      e.preventDefault()
+      setTriggetEmpity(!triggerEmpty)
+
+    };
     return (
 
             (addNews) ? <RegisterNews setAddNews={setAddNews} /> 
@@ -49,7 +79,11 @@ export const News = () => {
                       Adicionar +
                   </Button>
               </Col>
-              <SearchBar />
+              <SearchBar
+        searchTerm={searchTerm}
+        onSearchTermChange={handleSearchTermChange}
+        onSearch={handleSearch}
+      />
 
               <div className="d-flex flex-column mt-5">
                   {currentItens.map((item, index) => (
@@ -74,10 +108,9 @@ export const News = () => {
 const CardContet = (props) => {
     const {item} = props
     const api = process.env.REACT_APP_API_BASE_URL
-    
-    console.log(item)
+
     const [path, setPath] = useState('')
-    const [editor, setEditor] = useState('')
+    const [editor, setEditor] = useState(item.conteudo)
     const [days, setDays] = useState('')
     const [clicked, setClicked] = useState(false)
     const [showUpdate, setShowUpdate] = useState(false)
@@ -100,12 +133,11 @@ const CardContet = (props) => {
     
     const fetchData = async () => {
       const relation = await RelationPhotoService.getRelation(item.id)
-      console.log(relation)
       const photo = await PhotoService.getPhoto(relation.relationPhoto.id_foto_fk)
       setPath(relation.relationPhoto.id_foto_fk)
 
       const response = await CategoriesService.getCategories()
-      console.log(response)
+
       setCategories(response)
     }
 
@@ -130,10 +162,30 @@ const CardContet = (props) => {
       "conteudo": editor,
       "file": file
   }
+
     const relation = await RelationPhotoService.getRelation(item.id)
-    const response = await NewsService.updateNews(updateData, relation)
+    const response = await NewsService.updateNews(updateData, item)
+    if(updateData.file === '') {
+      setShowUpdate(false)
+    } else {
+      const responsePhoto = await PhotoService.updatePhoto(Number(relation.relationPhoto.id_foto_fk), updateData.file)
+      setShowUpdate(false)
+      window.location.reload(true)
+    }
+    
   }
-    console.log(path)
+  const deleteNews = async (e) => {
+    e.preventDefault()
+    const response = await NewsService.deleteNews(item.id)
+    const relation = await RelationPhotoService.getRelation(item.id)
+    const responsePhoto = await PhotoService.deletePhoto(Number(relation.relationPhoto.id_foto_fk)) // fazer
+    const responseRelation = await RelationPhotoService.deleteRelation(item.id) // Fazer
+    window.location.reload(true)
+  }
+
+  const exitModal = (e) => {
+    setShowDelete(false)
+  }
     return (
       <Col className="d-flex mt-5" style={{border: 'none', background: '#E2E8F082', borderRadius: '2rem', cursor: 'pointer'}}>
         <Image xs={4} style={{borderRadius: '2rem 0 0 2rem', width: '22%'}} src={`${api}photo/getPhoto/${path}`} />
@@ -143,7 +195,7 @@ const CardContet = (props) => {
         </Col>
         <Col xs={3} className="d-flex w-25" style={{justifyContent: 'space-evenly', alignContent: 'center', alignItems: 'center'}}>
             <>
-              {/* <GrEdit onClick={clickEdit} className="p-2" style={{borderRadius: '0.3rem', fontSize: 50, background: '#091B361A', fontColor: '#091B36', cursor: 'pointer'}}/>
+              <GrEdit onClick={clickEdit} className="p-2" style={{borderRadius: '0.3rem', fontSize: 50, background: '#091B361A', fontColor: '#091B36', cursor: 'pointer'}}/>
               <Modal show={showUpdate} onHide={setShowUpdate}>
                 <Modal.Header closeButton>
                   <Modal.Title>Update</Modal.Title>
@@ -155,7 +207,8 @@ const CardContet = (props) => {
                           <FormControl 
                           type="text"
                           value={title}
-                          onChange={(e) => setTitle(e.target.value)} />
+                          onChange={(e) => setTitle(e.target.value)}
+                          placeholder={item.titulo} />
 
                           
                       </Form.Group>
@@ -164,7 +217,8 @@ const CardContet = (props) => {
                           <FormControl 
                           type="text"
                           value={subTitle}
-                          onChange={(e) => setSubTitle(e.target.value)} />
+                          onChange={(e) => setSubTitle(e.target.value)}
+                          placeholder={item.sub_conteudo} />
 
                         <FormGroup controlId="imagem">
                         <Form.Label>Imagem</Form.Label>
@@ -190,12 +244,14 @@ const CardContet = (props) => {
                     </Dropdown>
                     
                       </Form.Group>
-                      <JoditEditor className="mt-5" value={editor} onChange={newContent => setEditor(newContent)}  />
+                      <div className="mt-5" style={{overflow: 'auto', maxHeight: 400, margin: 0, padding: 0}}>
+                        <JoditEditor  value={editor} onChange={newContent => setEditor(newContent)} />
+                      </div>
                       
                   </Form>
                   <Button variant="success" onClick={onUpdate}>Atualizar</Button>
                 </Modal.Footer>
-              </Modal> */}
+              </Modal>
               <FiTrash2 onClick={clickDelete} className="p-2" style={{borderRadius: '0.3rem', fontSize: 50, background: '#D6000729', color: '#D60007', cursor: 'pointer'}}/>
               <Modal show={showDelete} onHide={setShowDelete}>
                 <Modal.Header closeButton>
@@ -205,8 +261,8 @@ const CardContet = (props) => {
                   Você realmente deseja deletar essa noticia?
                 </Modal.Body>
                 <Modal.Footer>
-                  <Button variant="success">Sim</Button>
-                  <Button variant="danger">Não</Button>
+                  <Button onClick={deleteNews} variant="success">Sim</Button>
+                  <Button onClick={exitModal} variant="danger">Não</Button>
                 </Modal.Footer>
               </Modal>
             </>
@@ -215,20 +271,34 @@ const CardContet = (props) => {
     )
   }
   
-  const SearchBar = () => {
-  
-  
+  const SearchBar = ({ searchTerm, onSearchTermChange, onSearch }) => {
     return (
-          <Form className="d-flex flex-row w-75 gap-5">
-              <InputGroup className="custom-input w-75">
-                  <InputGroup.Text className="p-4" style={{borderRight: 'none', backgroundColor: '#F2F4F8', border: 'none'}}><FaSearch /></InputGroup.Text>
-                  <FormControl
-                    placeholder="Buscar por notícia" type="text" className="mr-sm-2 p-3 custom-input"  style={{borderLeft: 'none',fontWeight: 500}}></FormControl>
-              </InputGroup>
-              <Button  className="p-3 px-4" style={{maxHeight: 60, background: '#091B36', color: 'white', borderRadius: '1.2rem', border: 'none'}} variant="outline-success">Buscar</Button >
-  
-          </Form>
-  
-  )
-  }
+      <Form className="d-flex flex-row w-75 gap-5" onSubmit={e => { onSearch(e) }}>
+        <InputGroup className="custom-input w-75">
+          <InputGroup.Text
+            className="p-4"
+            style={{ borderRight: 'none', backgroundColor: '#F2F4F8', border: 'none' }}
+          >
+            <FaSearch />
+          </InputGroup.Text>
+          <FormControl
+            placeholder="Buscar por notícia"
+            type="text"
+            className="mr-sm-2 p-3 custom-input"
+            style={{ borderLeft: 'none', fontWeight: 500 }}
+            value={searchTerm}
+            onChange={onSearchTermChange} // Lidar com a mudança no termo de pesquisa
+          ></FormControl>
+        </InputGroup>
+        <Button
+          className="p-3 px-4"
+          style={{ maxHeight: 60, background: '#091B36', color: 'white', borderRadius: '1.2rem', border: 'none' }}
+          variant="outline-success"
+          onClick={onSearch} // Lidar com a ação de pesquisa
+        >
+          Buscar
+        </Button>
+      </Form>
+    );
+  };
   
