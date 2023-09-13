@@ -73,7 +73,7 @@ export const UpdateChampionship = ({campeonato, showUpdate}) => {
             <Col style={{maxWidth: '7%'}}>
                 <Button onClick={(e) => showUpdate(false)} style={{background: '#091B36', border: 'none'}}><AiOutlineArrowLeft /></Button>
             </Col>
-            <Row><ChampionshipTable trigger={trigger} setSelectJogo={setSelectJogo} setVisitantePlacar={setVisitantePlacar} setMandantePlacar={setMandantePlacar} setVisitante={setVisitante} setMandante={setMandante} campeonato={campeonato} onChangeRodada={setRodada} selectRow={setSelectRow} setLocal={setLocal} setDate={setDate} setHour={setHour} /></Row>
+            <Row><ChampionshipTable create setTrigger={setTrigger} trigger={trigger} setSelectJogo={setSelectJogo} setVisitantePlacar={setVisitantePlacar} setMandantePlacar={setMandantePlacar} setVisitante={setVisitante} setMandante={setMandante} campeonato={campeonato} onChangeRodada={setRodada} selectRow={setSelectRow} setLocal={setLocal} setDate={setDate} setHour={setHour} /></Row>
             <Row>
             <Col>
                 <Form>

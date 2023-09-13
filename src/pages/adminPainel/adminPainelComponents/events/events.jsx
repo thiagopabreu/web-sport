@@ -295,7 +295,7 @@ const handleDate = (e) => {
                     </FormGroup>
 
                     <Form.Group controlId="local">
-                          <Form.Label>Descrição</Form.Label>
+                          <Form.Label>Local</Form.Label>
                           <FormControl 
                           type="text"
                           value={local}

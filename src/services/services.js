@@ -25,24 +25,13 @@ export const NewsService = {
             "sub_conteudo": object.sub_conteudo,
             "id_categoria_fk": object.id_categoria_fk,
             "conteudo": object.conteudo        }
-
-        const file = object.file
         try {
             const response = await api.post('/news/registerNews', news)
             
-            const responseFoto = await api.post('/photo/registerUpload', {file: file}, {
-                headers: {
-                    'Content-Type': 'multipart/form-data'
-                }
-            })
-
-            console.log(responseFoto)
-
-            const responseRelation = await api.post('/relation/registerRelation', { id_news_fk: response.data.id, id_foto_fk: responseFoto.data.foto.id })
-
-            console.log(responseRelation)
+            return response.data
         } catch (error) {
             console.error(error)
+            alert('Erro ao cadastrar noticia')
         }
     },
     updateNews: async(object, id) => {
@@ -78,6 +67,17 @@ export const RelationPhotoService = {
             return response.data;
         } catch (error) {
             console.error(error)
+        }
+    },
+
+    registerRelation: async (id_news, id_foto) => {
+        try {
+            const response = await api.post('/relation/registerRelation', { id_news_fk: id_news, id_foto_fk: id_foto })
+            
+            return response.data
+        } catch (error) {
+            console.error(error)
+            alert('Erro ao fazer relação')
         }
     },
 

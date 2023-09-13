@@ -10,7 +10,7 @@ import FroalaEditorComponent from 'react-froala-wysiwyg';
 import FroalaEditor from "react-froala-wysiwyg";
 import FroalaEditorImg from "react-froala-wysiwyg/FroalaEditorImg";
 import JoditEditor from "jodit-react";
-import { CategoriesService, NewsService } from "../../../../services/services";
+import { CategoriesService, NewsService, PhotoService, RelationPhotoService } from "../../../../services/services";
 import { Drop } from "@phosphor-icons/react";
 import { AiOutlineArrowLeft } from "react-icons/ai";
 
@@ -37,17 +37,38 @@ export const RegisterNews = (props) => {
         setFile(selectedFile);
     }
     const registerNews = async (e) => {
-        const response = await NewsService.registerNews({
-            "titulo": title,
-            "sub_conteudo": subTitle,
-            "id_categoria_fk": categorySelect.id,
-            "conteudo": editor,
-            "file": file
-        })
 
-        console.log(response)
+            if(file != '') {
+                const response = await NewsService.registerNews({
+                    "titulo": title,
+                    "sub_conteudo": subTitle,
+                    "id_categoria_fk": categorySelect.id,
+                    "conteudo": editor
+                })
+                console.log(response)
+                if(response != undefined) {
+                    const responsePhoto = await PhotoService.registerPhoto(file)
+                    console.log(responsePhoto)
+                    if(responsePhoto.error) {
+                        alert('Imagem não cadastrada')
+                        return
+                    } else {
+                        const responseRelation = RelationPhotoService.registerRelation(response.id, responsePhoto.foto.id)
+                        window.location.reload();
+                    }
+                } else {
+                    console.log('entrei aqui')
+                    alert('Preencha os campos')
+                }
 
-        window.location.reload();
+
+                
+
+        } else {
+            alert('Preencha os campos')
+        }
+        
+        
     }
     console.log(file)
     return(

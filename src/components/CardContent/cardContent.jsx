@@ -2,6 +2,7 @@ import { useEffect, useState } from "react"
 import { Button, Card, Col, Image, Row } from "react-bootstrap"
 import { CategoriesService, NewsService, PhotoService, RelationPhotoService } from "../../services/services"
 import { useNavigate } from "react-router-dom";
+import { useMediaQuery } from "react-responsive";
 
 export const CardContent = (props) => {
     const api = process.env.REACT_APP_API_BASE_URL
@@ -58,12 +59,28 @@ export const CardContent = (props) => {
     const handleNavigate = (item) => {
         navigate(`/noticia/${item.id}`, {state: {news: item}})
     }
+    console.log('entrei')
 
+    const isMobileP = useMediaQuery({ query: '(max-width: 320px)' });
+    const isMobileM = useMediaQuery({ query: '(max-width: 375px)' });
+    const isMobileL = useMediaQuery({ query: '(max-width: 425px)' });
+    const isTablet = useMediaQuery({ query: '(min-width: 768px) and (max-width: 1023px)' });
+    const isLaptop = useMediaQuery({ query: '(min-width: 1024px) and (max-width: 1439px)' });
+    const cardClass = isMobileP ? 'flex-column mobile-p-card' : isMobileM ? 'flex-column mobile-m-card' : isMobileL ? 'flex-column mobile-l-card' : isTablet ? 'flex-column tablet-card' : isLaptop ? 'flex-row laptop-card' : 'flex-row default-card';
+    let colSize = 6; // Tamanho padrão de coluna para telas maiores
+    console.log(isLaptop)
+
+    if(isTablet) {
+        colSize = 12
+    }
+    if(isLaptop) {
+        colSize = 12
+    }
     const renderNewsCards = () => {
         return news.map((item, index) => (
-            <Col key={index} xs={12} sm={6} md={6} lg={6} className="mb-3">  
-                <Card className="d-flex flex-row" style={{border: 'none'}}>
-                    <Card.Img variant="top" src={`${api}photo/getPhoto/${item.id_foto_fk}`} style={{width: "40%", height: "40%"}}/>
+            <Col key={index} xs={12} sm={colSize} md={colSize} lg={colSize} className="m-0 mb-3 d-flex justify-content-around" style={{maxWidth: 610}}>  
+                <Card className={`d-flex p-0 m-0 ${cardClass}` }style={{border: 'none', width: '100%'}}>
+                    <Card.Img variant="top" src={`${api}photo/getPhoto/${item.id_foto_fk}`} style={{width: (isMobileP) ? 300 : 350, height: (isMobileP) ? 200 : 250}}/>
                     <Card.Body className="p-0 mx-3">
                         <p className="card-date p-0 m-0">{item.data_publicacao}</p>
                         <Card.Title>{item.titulo}</Card.Title>

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react"
-import { Col, Dropdown, Row, Table } from "react-bootstrap"
+import { Button, Col, Dropdown, Form, FormControl, Modal, Row, Table } from "react-bootstrap"
 import {AiOutlineCalendar, AiOutlineClockCircle} from 'react-icons/ai'
 import {GrLocation} from 'react-icons/gr'
 import { ChampionshipService, GamesService, RoundsService } from "../../services/services"
@@ -12,7 +12,12 @@ export const ChampionshipTable = (props) => {
     const [jogos, setJogos] = useState([]);
     const [selectedRodada, setSelectedRodada] = useState();
     const [rowSelect, setRowSelect] = useState(-1)
-    
+    const [showCreate, setShowCreate] = useState(false)
+    const [title, setTitle] = useState('')
+    const [error, setError] = useState('')
+    const [showError, setShowError] = useState(false)
+    const [showDeleteRound, setShowDeleteRound] = useState(false)
+    const [trigget, setTrigger] = useState(false)
     useEffect(() => {
         fetchDataRounds()
     }, [props.campeonato.id])
@@ -26,6 +31,7 @@ export const ChampionshipTable = (props) => {
 
     useEffect(() => {
         fetchDataGames()
+        fetchDataRounds()
     }, [props.trigger])
     useEffect(() => {
         if(props.selectRow) props.selectRow(rowSelect)
@@ -104,6 +110,33 @@ export const ChampionshipTable = (props) => {
         }
         
     }
+    const createRound = async (e) => {
+        const response = await RoundsService.registerRound({
+            "id_campeonato_fk": props.campeonato.id,
+            "numero_rodada": title
+        })
+
+        setShowCreate(false)
+        const trigger = props.trigger
+        props.setTrigger(!trigger)
+    }
+    const exitModal = () => {
+        setShowDeleteRound(false)
+      }
+    const deleteRound = async () => {
+
+        const responseGames = await GamesService.getGameByRoundId(selectedRodada)
+        responseGames.map(async (item, index) => {
+            const response = await GamesService.deleteGame(item.id)
+        })
+        const response = await RoundsService.deleteRound(selectedRodada)
+
+
+
+        setShowDeleteRound(false)
+        const trigger = props.trigger
+        props.setTrigger(!trigger)
+    }
     return (
                             <>
                                 <Row className="mb-5" style={{justifyContent: 'space-between'}}>
@@ -111,7 +144,43 @@ export const ChampionshipTable = (props) => {
                                         <IconSoccerBall />
                                         <h5 className="m-5" style={{fontSize: 36, fontWeight: 500}}>{props.campeonato.nome_campeonato}</h5>
                                     </Col>
-                                    <CampeonatoDropdown rodadas={rodadas} selectRodada={selectedRodada} onSelectRodada={setSelectedRodada}/>
+                                    <Col style={{display: 'flex', alignContent: 'center', alignItems: 'center', gap: 5}}>
+                                        <CampeonatoDropdown rodadas={rodadas} selectRodada={selectedRodada} onSelectRodada={setSelectedRodada}/>
+                                        {props.create && <Button onClick={e => setShowCreate(true)} style={{background: '#091B36', border: 'none'}}>+</Button>}
+                                        {props.create && <Button onClick={e => setShowDeleteRound(true)} style={{background: '#091B36', border: 'none'}}>-</Button>}
+                                        <Modal show={showCreate} onHide={setShowCreate}>
+                                            <Modal.Header closeButton>
+                                            <Modal.Title>Create</Modal.Title>
+                                            </Modal.Header>
+                                            <Modal.Footer style={{display: 'flex', justifyContent: 'center'}}>
+                                            <Form>
+                                                <Form.Group controlId="title">
+                                                    <Form.Label>Nome</Form.Label>
+                                                    <FormControl 
+                                                    type="text"
+                                                    value={title}
+                                                    onChange={(e) => setTitle(e.target.value)}
+                                                    />
+                                                    {showError && <Alert className="mt-3" variant="danger">{error}</Alert>}
+                                                </Form.Group>
+                                                
+                                            </Form>
+                                            </Modal.Footer>
+                                            <Button className="my-4 mx-5" variant="success" onClick={createRound}>Criar</Button>
+                                        </Modal>
+                                        <Modal show={showDeleteRound} onHide={setShowDeleteRound}>
+                                            <Modal.Header closeButton>
+                                            <Modal.Title>Deletar</Modal.Title>
+                                            </Modal.Header>
+                                            <Modal.Body>
+                                            Você realmente deseja deletar essa rodada?
+                                            </Modal.Body>
+                                            <Modal.Footer>
+                                            <Button onClick={(e) => deleteRound(e)} variant="success">Sim</Button>
+                                            <Button onClick={exitModal} variant="danger">Não</Button>
+                                            </Modal.Footer>
+                                        </Modal>
+                                    </Col>
                                 </Row>
                                 <Row>
                                     <Table responsive style={{boxShadow: '0 4px 15px #00000040'}}>

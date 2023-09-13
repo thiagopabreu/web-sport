@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Button, Col, Form, FormControl, InputGroup, Modal, Row } from "react-bootstrap"
+import { Alert, Button, Col, Form, FormControl, InputGroup, Modal, Row } from "react-bootstrap"
 import { FaSearch } from "react-icons/fa";
 import { FiTrash2 } from "react-icons/fi";
 import { GrEdit } from "react-icons/gr";
@@ -20,6 +20,8 @@ export const Championship = () => {
     const [selectChampionship, setSelectChampionship] = useState({})
     const [trigger, setTrigger] = useState(false)
     const [searchResults, setSearchResults] = useState([]);
+    const [error, setError] = useState('');
+    const [showError, setShowError] = useState(false)
     useEffect(() => {
         fetchData()
     }, [trigger])
@@ -44,19 +46,33 @@ export const Championship = () => {
       };
 
       const createChampion = async () => {
-        const object = {
+
+        if(title != '' && year.length == 4) {
+          const object = {
             "nome_campeonato": title,
             "ano_campeonato": Number(year)
-        }
-        console.log(object)
-        const response = await ChampionshipService.registerChampionship(object)
-        const responseRound = await RoundsService.registerRound({
-            "id_campeonato_fk": response.newChampionship.id,
-            "numero_rodada": 1
-        })
-        setShowCreate(false)
-        setTrigger(!trigger)
+          }
+          console.log(object)
+          const response = await ChampionshipService.registerChampionship(object)
+          const responseRound = await RoundsService.registerRound({
+              "id_campeonato_fk": response.newChampionship.id,
+              "numero_rodada": "Rodada 1"
+          })
+          setShowCreate(false)
+          setTrigger(!trigger)
 
+        } else {
+          if(title == '' || year.length > 1) {
+            setError('Preencha os campos!')
+            setShowError(true)
+          } 
+          if(year.length > 4) {
+            setError('Numero não válido')
+            setShowError(true)
+          }
+        }
+
+        
       }
       const exitModal = () => {
         setShowDelete(false)
@@ -92,7 +108,10 @@ export const Championship = () => {
         :
         <Row className="d-flex flex-row mt-5 mx-5 px-5" style={{justifyContent: 'space-between'}}>
             <Col xs={12} sm={6} md={4} lg={3} style={{display: 'flex'}}>
-                  <Button onClick={(e) => setShowCreate(true)} className="w-50 p-0 m-0 " style={{background: '#091B36'}}>
+                  <Button onClick={(e) => {
+                    setShowError(false)
+                    setShowCreate(true)
+                  }} className="w-50 p-0 m-0 " style={{background: '#091B36'}}>
                       Adicionar +
                   </Button>
                   <Modal show={showCreate} onHide={setShowCreate}>
@@ -113,8 +132,16 @@ export const Championship = () => {
                           <FormControl 
                           type="text"
                           value={year}
-                          onChange={(e) => setYear(e.target.value)}
+                          onChange={(e) => {
+                            const inputValue = e.target.value;
+                            if(/^\d*$/.test(inputValue)) {
+                              setYear(e.target.value)
+                            } else {
+                              setError('Digite apenas números.');
+                            }
+                          }}
                           />
+                          {showError && <Alert className="mt-3" variant="danger">{error}</Alert>}
                       </Form.Group>
                       
                   </Form>

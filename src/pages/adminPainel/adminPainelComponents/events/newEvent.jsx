@@ -61,6 +61,7 @@ export const RegisterEvent = (props) => {
             const responsePhoto = await PhotoService.registerPhoto(file)
             console.log(responsePhoto)
             const relation = await RelationPhotoEventService.registerRelation({"id_event_fk": response.newEvent.id, "id_foto_fk": responsePhoto.foto.id})
+            window.location.reload();
         }
         
     }
@@ -85,7 +86,7 @@ export const RegisterEvent = (props) => {
                         
                     </Form.Group>
                     <Form.Group controlId="descricao">
-                        <Form.Label>Descricao</Form.Label>
+                        <Form.Label>Descrição</Form.Label>
                         <FormControl 
                         type="text"
                         value={descricao}

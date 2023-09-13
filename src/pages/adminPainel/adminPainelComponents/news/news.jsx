@@ -107,6 +107,7 @@ export const News = (props) => {
 
 const CardContet = (props) => {
     const {item} = props
+    console.log(item)
     const api = process.env.REACT_APP_API_BASE_URL
 
     const [path, setPath] = useState('')
@@ -155,6 +156,7 @@ const CardContet = (props) => {
   }
 
   const onUpdate = async (e) => {
+    console.log(item)
     const updateData = {
       "titulo": title,
       "sub_conteudo": subTitle,
@@ -162,7 +164,18 @@ const CardContet = (props) => {
       "conteudo": editor,
       "file": file
   }
-
+    if(title === '') {
+      updateData.titulo = item.titulo
+    }
+    if(subTitle === '') {
+      updateData.sub_conteudo = item.sub_conteudo
+    }
+    if(!categorySelect.id) {
+      updateData.id_categoria_fk = item.id_categoria_fk
+    }
+    if(editor === '') {
+      updateData.conteudo === item.conteudo
+    }
     const relation = await RelationPhotoService.getRelation(item.id)
     const response = await NewsService.updateNews(updateData, item)
     if(updateData.file === '') {
@@ -244,7 +257,7 @@ const CardContet = (props) => {
                     </Dropdown>
                     
                       </Form.Group>
-                      <div className="mt-5" style={{overflow: 'auto', maxHeight: 400, margin: 0, padding: 0}}>
+                      <div className="mt-5" style={{overflow: 'auto', maxHeight: 350, maxWidth: 470, margin: 0, padding: 0}}>
                         <JoditEditor  value={editor} onChange={newContent => setEditor(newContent)} />
                       </div>
                       

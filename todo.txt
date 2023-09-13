@@ -18,3 +18,12 @@
 
 
 • Extra: ver responsividade geral
+
+• Pós revisão
+
+    - Admin: 
+        • Quando não altera o update para nada, está esvaziando tudo ✓
+        • Modals não responsivos ✓
+        • Limitar o uso dos fields 
+        • Tratamento de erro em todos os register / update
+        • 

@@ -5,18 +5,28 @@ export const CampeonatoDropdown = ({ rodadas, onSelectRodada, selectRodada }) =>
 
     const [rodadaSelected, setRodadaSelected] = useState(1)
 
+    useEffect(() => {
+        console.log(rodadas[0])
+        if(rodadas[0] != undefined) {
+            console.log('entrei aqui')
+            setRodadaSelected(rodadas[0].numero_rodada)
+        } else {
+            setRodadaSelected('-')
+        }
+        
+    }, [rodadas])
   return (
         <Col className="d-flex" style={{justifyContent: 'flex-end', alignContent: 'center', alignItems: 'center'}}>
             <Dropdown >
                 <Dropdown.Toggle style={{background: '#091B36', border: 'none'}}>
-                    Rodada {rodadaSelected}
+                    {rodadaSelected}
                 </Dropdown.Toggle>
                 <Dropdown.Menu>
                 {rodadas.map((rodada, index) => (
                     <Dropdown.Item onClick={(e) => {
                         setRodadaSelected(rodada.numero_rodada)
                         onSelectRodada(rodada.id)
-                    }}>{rodada.numero_rodada} Rodada</Dropdown.Item>
+                    }}>{rodada.numero_rodada}</Dropdown.Item>
                 ))}
                 </Dropdown.Menu>
                 
