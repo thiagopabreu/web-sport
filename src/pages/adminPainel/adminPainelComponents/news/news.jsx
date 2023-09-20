@@ -174,7 +174,7 @@ const CardContet = (props) => {
       updateData.id_categoria_fk = item.id_categoria_fk
     }
     if(editor === '') {
-      updateData.conteudo === item.conteudo
+      updateData.conteudo = item.conteudo
     }
     const relation = await RelationPhotoService.getRelation(item.id)
     const response = await NewsService.updateNews(updateData, item)
