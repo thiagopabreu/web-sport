@@ -1,6 +1,6 @@
 import { Editor } from "draft-js"
 import { useEffect, useState } from "react"
-import { Button, Col, Dropdown, Form, FormControl, FormGroup, Row } from "react-bootstrap"
+import { Button, Col, Dropdown, Form, FormControl, FormGroup, Row, Spinner } from "react-bootstrap"
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 
@@ -23,6 +23,8 @@ export const RegisterNews = (props) => {
     const [file, setFile] = useState("")
     const [categories, setCategories] = useState([])
     const [categorySelect, setCategorySelect] = useState({nome: 'Categorias'})
+    const [clicked, setClicked] = useState(false)
+
     useEffect(() => {
         fetchCategoriesData()
     }, [])
@@ -37,7 +39,7 @@ export const RegisterNews = (props) => {
         setFile(selectedFile);
     }
     const registerNews = async (e) => {
-
+            setClicked(true)
             if(file != '') {
                 const response = await NewsService.registerNews({
                     "titulo": title,
@@ -53,7 +55,8 @@ export const RegisterNews = (props) => {
                         alert('Imagem não cadastrada')
                         return
                     } else {
-                        const responseRelation = RelationPhotoService.registerRelation(response.id, responsePhoto.foto.id)
+                        const responseRelation = await RelationPhotoService.registerRelation(response.id, responsePhoto.foto.id)
+                        console.log(responseRelation)
                         window.location.reload();
                     }
                 } else {
@@ -124,7 +127,7 @@ export const RegisterNews = (props) => {
                             ))}
                         </Dropdown.Menu>
                     </Dropdown>
-                    <Button className="mt-4" onClick={(e) => registerNews(e)} style={{background: '#091B36', border: 'none'}}>Publicar</Button>
+                    <Button disabled={clicked} className="mt-4" onClick={(e) => registerNews(e)} style={{background: '#091B36', border: 'none'}}>{clicked ? <Spinner animation="border" role="status"><span className="visually-hidden"></span></Spinner> : 'Publicar'}</Button>
                 </Form>
             </Col>
             

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 import { Button, Card, Col, Image, Row } from "react-bootstrap"
-import { CategoriesService, EventService, NewsService, PhotoService, RelationPhotoService } from "../../services/services"
+import { CategoriesService, EventService, NewsService, PhotoService, RelationPhotoEventService, RelationPhotoService } from "../../services/services"
 import { useNavigate } from "react-router-dom";
 
 export const EventCard = (props) => {
@@ -8,6 +8,7 @@ export const EventCard = (props) => {
     const api = process.env.REACT_APP_API_BASE_URL
     const timeStamp = Date.now()
     const [events, setEvents] = useState([]);
+    const [paths, setPaths] = useState([])
     const navigate = useNavigate()
     useEffect(() => {
         fetchData()
@@ -31,10 +32,11 @@ export const EventCard = (props) => {
             const dateOriginal = item.data_evento
             const dateHourObject = new Date(dateOriginal)
             const hour = dateHourObject.getHours()
-            const minutes = dateHourObject.getMinutes();
+            let minutes = dateHourObject.getMinutes();
+            if(minutes > 0 && minutes < 9) minutes = '0' + minutes
             console.log(`${hour}:${minutes}`)
             const day = dateHourObject.getUTCDate();
-            const month = dateHourObject.getUTCMonth();
+            const month = dateHourObject.getUTCMonth() + 1;
             const formatedMonth = month.toString().padStart(2, '0');
             const year = dateHourObject.getUTCFullYear();
             
@@ -58,24 +60,33 @@ export const EventCard = (props) => {
                     id_categoria_fk: event.id_categoria_fk
                 });
             }
-
+            
             console.log(newEvent)
         }
+        let caminhos = []
+        caminhos = response.map(async (event) => {
+            console.log(event)
+            const responseRelation = await RelationPhotoEventService.getRelation(event.id)
 
+            return responseRelation.relationPhoto
+        })
+        const pathsResolver = await Promise.all(caminhos)
+        setPaths(pathsResolver)
         setEvents(newEvent);
     }
     const handleNavigate = (item) => {
         navigate(`/evento/${item.id}`, {state: {event: item}})
     }
     console.log(events)
+    console.log(paths)
     const renderNewsCards = () => {
         return events.map((item, index) => (
             <Col key={index} xs={6} sm={3} md={3} lg={3} className="mb-3">  
                 <Card className="d-flex flex-column" style={{border: 'none', minWidth: 300}}>
-                    <Card.Img variant="top" src={'image_example_4.png'} style={{ // Definindo a altura máxima
-                        width: 'auto',
-                        height: 'auto'
-                    }}/>
+                    {paths.length > 0 && <Card.Img variant="top" src={`${api}photo/getPhoto/${paths[index].id_foto_fk}`} style={{ // Definindo a altura máxima
+                        maxWidth: 400,
+                        maxHeight: 250
+                    }}/>}
                     <Card.Body className="p-0">
                         <p className="card-date p-0 m-0 mt-3" style={{fontWeight: 600, color: '#D60007', fontSize: 14}}>{`${item.data_evento}`}</p>
                         <Card.Title style={{color: '#091B36', fontWeight: 600, fontSize: 18, marginTop: 10}}>{item.nome_evento}</Card.Title>

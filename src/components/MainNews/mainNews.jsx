@@ -67,8 +67,7 @@ export const MainNews = (props) => {
       <>
         <Row className={isMobile ? "flex-column align-content-center justify-content-center align-items-center" : "d-flex flex-row"} style={{flexWrap: "nowrap"}}>
         <Col xs={12} md={6} className="img-container d-flex flex-column align-items-center justify-content-center">
-          {console.log('entrei aqui')}
-          <img src={`${api}photo/getPhoto/${path}`} width={640} height={400} alt="Imagem de exemplo" className="img-fluid" />
+          <img  style={{borderRadius: 20}} src={`${api}photo/getPhoto/${path}`} width={640} height={400} alt="Imagem de exemplo" className="img-fluid" />
         </Col>
         <Col xs={12} md={6} className={isMobile && "mt-5 w-100"} style={{display: 'flex', flexDirection: 'column', justifyContent: 'space-evenly'}}>
           <p style={{ fontWeight: 400, fontSize: 14, color: '#828282' }}>{news.data_publicacao}</p>

@@ -80,7 +80,7 @@ export const CardContent = (props) => {
         return news.map((item, index) => (
             <Col key={index} xs={12} sm={colSize} md={colSize} lg={colSize} className="m-0 mb-3 d-flex justify-content-around" style={{maxWidth: 610}}>  
                 <Card className={`d-flex p-0 m-0 ${cardClass}` }style={{border: 'none', width: '100%'}}>
-                    <Card.Img variant="top" src={`${api}photo/getPhoto/${item.id_foto_fk}`} style={{width: (isMobileP) ? 300 : 350, height: (isMobileP) ? 200 : 250}}/>
+                    <Card.Img variant="top" src={`${api}photo/getPhoto/${item.id_foto_fk}`} style={{width: (isMobileP) ? 300 : 250, height: (isMobileP) ? 200 : 150}}/>
                     <Card.Body className="p-0 mx-3">
                         <p className="card-date p-0 m-0">{item.data_publicacao}</p>
                         <Card.Title>{item.titulo}</Card.Title>
