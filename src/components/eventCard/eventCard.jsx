@@ -70,6 +70,7 @@ export const EventCard = (props) => {
 
             return responseRelation.relationPhoto
         })
+        console.log(caminhos)
         const pathsResolver = await Promise.all(caminhos)
         setPaths(pathsResolver)
         setEvents(newEvent);

@@ -1,31 +1,33 @@
 import React, { useEffect, useState } from 'react';
 import { Col, Dropdown, Row } from 'react-bootstrap';
 
-export const CampeonatoDropdown = ({ rodadas, onSelectRodada, selectRodada }) => {
+export const CampeonatoDropdown = ({ rodadas, onSelectRodada, selectRodada, setRodada }) => {
 
-    const [rodadaSelected, setRodadaSelected] = useState(1)
-
+    const [index, setIndex] = useState(0)
+    const [rodadaName, setRodadaName] = useState('')
     useEffect(() => {
-        console.log(rodadas[0])
-        if(rodadas[0] != undefined) {
-            console.log('entrei aqui')
-            setRodadaSelected(rodadas[0].numero_rodada)
-        } else {
-            setRodadaSelected('-')
-        }
+        console.log()
+        setRodadaName(rodadas[0].numero_rodada)
+        // if(rodadas[0] != undefined) { 
+        //     setRodadaSelected(rodadas[0].numero_rodada)
+        // } else {
+        //     setRodadaSelected('-')
+        // }
         
     }, [rodadas])
   return (
         <Col className="d-flex" style={{justifyContent: 'flex-end', alignContent: 'center', alignItems: 'center'}}>
             <Dropdown >
                 <Dropdown.Toggle style={{background: '#091B36', border: 'none'}}>
-                    {rodadaSelected}
+                    {rodadaName}
                 </Dropdown.Toggle>
                 <Dropdown.Menu>
                 {rodadas.map((rodada, index) => (
                     <Dropdown.Item onClick={(e) => {
-                        setRodadaSelected(rodada.numero_rodada)
+                        setIndex(index)
+                        setRodada(rodada.id)
                         onSelectRodada(rodada.id)
+                        setRodadaName(rodada.numero_rodada)
                     }}>{rodada.numero_rodada}</Dropdown.Item>
                 ))}
                 </Dropdown.Menu>

@@ -1,7 +1,7 @@
 import { Button, Col, Form, FormControl, Row } from "react-bootstrap"
 import { ChampionshipTable } from "../../../../components/ChampionshipTable/championshipTable"
 import { useEffect, useState } from "react"
-import { GamesService } from "../../../../services/services"
+import { GamesService, RoundsService } from "../../../../services/services"
 import { AiOutlineArrowLeft } from "react-icons/ai"
 
 
@@ -14,10 +14,21 @@ export const UpdateChampionship = ({campeonato, showUpdate}) => {
     const [visitante, setVisitante] = useState('')
     const [mandantePlacar, setMandantePlacar] = useState(0)
     const [visitantePlacar, setVisitantePlacar] = useState(0)
-    const [rodada, setRodada] = useState(1)
+    const [rodada, setRodada] = useState(0)
+    const [rodadas, setRodadas] = useState([])
     const [trigger, setTrigger] = useState(false)
     const [selectRow, setSelectRow] = useState(-1)
     const [selectJogo, setSelectJogo] = useState({})
+    useEffect(() => {
+        fetchData()
+        console.log(rodada)
+    }, [])
+    const fetchData = async () => {
+        const response = await RoundsService.getRoundByChampionshipId(campeonato.id)
+        console.log(response[0].id)
+        setRodadas(response)
+        setRodada(response[0].id)
+    }
     useEffect(() => {
         console.log(rodada)
     }, [rodada])
@@ -73,7 +84,7 @@ export const UpdateChampionship = ({campeonato, showUpdate}) => {
             <Col style={{maxWidth: '7%'}}>
                 <Button onClick={(e) => showUpdate(false)} style={{background: '#091B36', border: 'none'}}><AiOutlineArrowLeft /></Button>
             </Col>
-            <Row><ChampionshipTable create setTrigger={setTrigger} trigger={trigger} setSelectJogo={setSelectJogo} setVisitantePlacar={setVisitantePlacar} setMandantePlacar={setMandantePlacar} setVisitante={setVisitante} setMandante={setMandante} campeonato={campeonato} onChangeRodada={setRodada} selectRow={setSelectRow} setLocal={setLocal} setDate={setDate} setHour={setHour} /></Row>
+            <Row>{(rodada == 0) ? <></> : <ChampionshipTable create setTrigger={setTrigger} trigger={trigger} setSelectJogo={setSelectJogo} setVisitantePlacar={setVisitantePlacar} setMandantePlacar={setMandantePlacar} setVisitante={setVisitante} setMandante={setMandante} campeonato={campeonato} onChangeRodada={setRodada} selectRow={setSelectRow} setLocal={setLocal} setDate={setDate} setHour={setHour} rodada={rodada} setRodada={setRodada} rodadas={rodadas} setRodadas={setRodadas}/>}</Row>
             <Row>
             <Col>
                 <Form>

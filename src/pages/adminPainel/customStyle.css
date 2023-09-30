@@ -1,0 +1,24 @@
+/* CSS personalizado */
+.my-custom-text {
+    font-size: 18px; /* Tamanho de fonte padrão */
+  }
+  
+  @media (max-width: 1024) {
+    .my-custom-text {
+        font-size: 5;
+    }
+  }
+  /* Ajuste o tamanho da fonte para telas menores */
+  @media (max-width: 768px) {
+    .my-custom-text {
+      font-size: 12px;
+    }
+  }
+  
+  /* Ajuste o tamanho da fonte para telas ainda menores */
+  @media (max-width: 576px) {
+    .my-custom-text {
+      font-size: 14px;
+    }
+  }
+  

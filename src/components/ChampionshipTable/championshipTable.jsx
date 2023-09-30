@@ -7,10 +7,10 @@ import { CampeonatoDropdown } from "../CampeonatoDropdown/campeonatoDropdown"
 export const ChampionshipTable = (props) => {
 
 
-
     const [rodadas, setRodadas] = useState([]);
     const [jogos, setJogos] = useState([]);
-    const [selectedRodada, setSelectedRodada] = useState();
+    const [filterJogos, setFilterJogos] = useState([{}])
+    const [selectedRodada, setSelectedRodada] = useState(props.rodada);
     const [rowSelect, setRowSelect] = useState(-1)
     const [showCreate, setShowCreate] = useState(false)
     const [title, setTitle] = useState('')
@@ -18,24 +18,32 @@ export const ChampionshipTable = (props) => {
     const [showError, setShowError] = useState(false)
     const [showDeleteRound, setShowDeleteRound] = useState(false)
     const [trigget, setTrigger] = useState(false)
+
+    useEffect(() => {
+        fetchDataRounds()
+        fetchDataGames()
+        console.log(rowSelect)
+        console.log(selectedRodada)
+        console.log(filterJogos)
+    }, []) 
+
     useEffect(() => {
         fetchDataRounds()
     }, [props.campeonato.id])
-
     useEffect(() => {
         fetchDataGames()
         console.log(rowSelect)
         console.log(selectedRodada)
-        if(props.onChangeRodada) props.onChangeRodada(selectedRodada)
+        //if(props.onChangeRodada) props.onChangeRodada(selectedRodada)
+
     }, [selectedRodada, rowSelect])
 
     useEffect(() => {
-        fetchDataGames()
         fetchDataRounds()
+        fetchDataGames()
+
     }, [props.trigger])
-    useEffect(() => {
-        if(props.selectRow) props.selectRow(rowSelect)
-    }, [rowSelect])
+
     useEffect(() => {
         if(props.setVisitantePlacar && props.setMandantePlacar && props.setVisitante && props.setMandante && props.setDate && props.setLocal && props.setHour) {
             if(rowSelect >-1) {
@@ -61,13 +69,20 @@ export const ChampionshipTable = (props) => {
             }
             
         }
+        const trigger = props.trigger
+        props.setTrigger(!trigger)
     }, [rowSelect])
 
     const fetchDataGames = async () => {
-        const response = await GamesService.getGameByRoundId(selectedRodada)
-        const jogoArray = []
+        console.log(selectedRodada)
+        const response = await GamesService.getGameByRoundId(props.rodada)
+        console.log(response)
+        let jogoArray = []
         response.map((jogo) => {
-            rodadas.map((rodada) => {
+            console.log(jogo)
+            console.log(props.rodadas)
+            props.rodadas.map((rodada) => {
+                console.log(rodada)
                 if(rodada.id == jogo.id_rodada_fk) {
                     if(rodada.id_campeonato_fk == props.campeonato.id) {
                         const date = jogo.data
@@ -80,25 +95,26 @@ export const ChampionshipTable = (props) => {
             })
         })
         setJogos(jogoArray)
+        filterGames(jogoArray)
     }
+    const filterGames = (jogoArray) => {
+        console.log(jogoArray)
+        jogoArray.map(jogo => jogo.id_rodada_fk === selectedRodada)
 
+        setFilterJogos(jogoArray)
+    }
     const fetchDataRounds = async () => {
         const response = await RoundsService.getRoundByChampionshipId(props.campeonato.id)
-        setRodadas(response)
         console.log(response)
-
+        props.setRodadas(response)
+        setSelectedRodada(response[0].id)
         const responseRound = await RoundsService.getRounds()
         console.log(responseRound)
-        let first = false
-        responseRound.map((item) => {
-            if(props.campeonato.id == item.id_campeonato_fk && !first) {
-                setSelectedRodada(item.id)
-                first = true 
-            }
-        })
+ 
     }
 
-    const filterJogos = jogos.filter(jogo => jogo.id_rodada_fk === selectedRodada)
+    //const filterJogos = jogos.filter(jogo => jogo.id_rodada_fk === selectedRodada)
+    
     const handleClick = (e, index, jogo) => {
         if(rowSelect == index) {
             setRowSelect(-1)
@@ -137,95 +153,101 @@ export const ChampionshipTable = (props) => {
         const trigger = props.trigger
         props.setTrigger(!trigger)
     }
+    
+    console.log(props.rodada)
+    console.log(selectedRodada)
+    console.log(filterJogos)
+    console.log((filterJogos.length != 0))
     return (
                             <>
                                 <Row className="mb-5" style={{justifyContent: 'space-between'}}>
-                                    <Col style={{display: 'flex', alignContent: 'center', alignItems: 'center'}}>
-                                        <IconSoccerBall />
-                                        <h5 className="m-5" style={{fontSize: 36, fontWeight: 500}}>{props.campeonato.nome_campeonato}</h5>
-                                    </Col>
-                                    <Col style={{display: 'flex', alignContent: 'center', alignItems: 'center', gap: 5}}>
-                                        <CampeonatoDropdown rodadas={rodadas} selectRodada={selectedRodada} onSelectRodada={setSelectedRodada}/>
-                                        {props.create && <Button onClick={e => setShowCreate(true)} style={{background: '#091B36', border: 'none'}}>+</Button>}
-                                        {props.create && <Button onClick={e => setShowDeleteRound(true)} style={{background: '#091B36', border: 'none'}}>-</Button>}
-                                        <Modal show={showCreate} onHide={setShowCreate}>
-                                            <Modal.Header closeButton>
-                                            <Modal.Title>Create</Modal.Title>
-                                            </Modal.Header>
-                                            <Modal.Footer style={{display: 'flex', justifyContent: 'center'}}>
-                                            <Form>
-                                                <Form.Group controlId="title">
-                                                    <Form.Label>Nome</Form.Label>
-                                                    <FormControl 
-                                                    type="text"
-                                                    value={title}
-                                                    onChange={(e) => setTitle(e.target.value)}
-                                                    />
-                                                    {showError && <Alert className="mt-3" variant="danger">{error}</Alert>}
-                                                </Form.Group>
-                                                
-                                            </Form>
-                                            </Modal.Footer>
-                                            <Button className="my-4 mx-5" variant="success" onClick={createRound}>Criar</Button>
-                                        </Modal>
-                                        <Modal show={showDeleteRound} onHide={setShowDeleteRound}>
-                                            <Modal.Header closeButton>
-                                            <Modal.Title>Deletar</Modal.Title>
-                                            </Modal.Header>
-                                            <Modal.Body>
-                                            Você realmente deseja deletar essa rodada?
-                                            </Modal.Body>
-                                            <Modal.Footer>
-                                            <Button onClick={(e) => deleteRound(e)} variant="success">Sim</Button>
-                                            <Button onClick={exitModal} variant="danger">Não</Button>
-                                            </Modal.Footer>
-                                        </Modal>
-                                    </Col>
-                                </Row>
-                                <Row>
-                                    <Table responsive style={{boxShadow: '0 4px 15px #00000040'}}>
-                                        <thead >
-                                            <tr>
-                                                <th><AiOutlineCalendar/> Data</th>
-                                                <th><AiOutlineClockCircle /> Horario</th>
-                                                <th><GrLocation/> Local</th>
-                                                <th>Mandante</th>
-                                                <th>Placar</th>
-                                                <th>Visitante</th>
+                                <Col style={{display: 'flex', alignContent: 'center', alignItems: 'center'}}>
+                                    <IconSoccerBall />
+                                    <h5 className="m-5" style={{fontSize: 36, fontWeight: 500}}>{props.campeonato.nome_campeonato}</h5>
+                                </Col>
+                                <Col style={{display: 'flex', alignContent: 'center', alignItems: 'center', gap: 5}}>
+                                    <CampeonatoDropdown rodadas={props.rodadas} rodada={props.rodada} setRodada={props.setRodada} selectRodada={selectedRodada} onSelectRodada={setSelectedRodada}/>
+                                    {props.create && <Button onClick={e => setShowCreate(true)} style={{background: '#091B36', border: 'none'}}>+</Button>}
+                                    {props.create && <Button onClick={e => setShowDeleteRound(true)} style={{background: '#091B36', border: 'none'}}>-</Button>}
+                                    <Modal show={showCreate} onHide={setShowCreate}>
+                                        <Modal.Header closeButton>
+                                        <Modal.Title>Create</Modal.Title>
+                                        </Modal.Header>
+                                        <Modal.Footer style={{display: 'flex', justifyContent: 'center'}}>
+                                        <Form>
+                                            <Form.Group controlId="title">
+                                                <Form.Label>Nome</Form.Label>
+                                                <FormControl 
+                                                type="text"
+                                                value={title}
+                                                onChange={(e) => setTitle(e.target.value)}
+                                                />
+                                                {showError && <Alert className="mt-3" variant="danger">{error}</Alert>}
+                                            </Form.Group>
+                                            
+                                        </Form>
+                                        </Modal.Footer>
+                                        <Button className="my-4 mx-5" variant="success" onClick={createRound}>Criar</Button>
+                                    </Modal>
+                                    <Modal show={showDeleteRound} onHide={setShowDeleteRound}>
+                                        <Modal.Header closeButton>
+                                        <Modal.Title>Deletar</Modal.Title>
+                                        </Modal.Header>
+                                        <Modal.Body>
+                                        Você realmente deseja deletar essa rodada?
+                                        </Modal.Body>
+                                        <Modal.Footer>
+                                        <Button onClick={(e) => deleteRound(e)} variant="success">Sim</Button>
+                                        <Button onClick={exitModal} variant="danger">Não</Button>
+                                        </Modal.Footer>
+                                    </Modal>
+                                </Col>
+                            </Row>
+                            <Row>
+                                <Table responsive style={{boxShadow: '0 4px 15px #00000040'}}>
+                                    <thead >
+                                        <tr>
+                                            <th><AiOutlineCalendar/> Data</th>
+                                            <th><AiOutlineClockCircle /> Horario</th>
+                                            <th><GrLocation/> Local</th>
+                                            <th>Mandante</th>
+                                            <th>Placar</th>
+                                            <th>Visitante</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {filterJogos &&
+                                        filterJogos.map((jogo, index) => (
+                                            <tr onClick={(e) => handleClick(e, index, jogo)} style={(rowSelect === index) ? {backgroundColor: 'red'} : {cursor: 'pointer'}}>
+                                                <td style={(rowSelect === index) ? {backgroundColor: '#e4bfbf'} : {cursor: 'pointer'}}>{jogo.data}</td>
+                                                <td style={(rowSelect === index) ? {backgroundColor: '#e4bfbf'} : {cursor: 'pointer'}}>{jogo.hora}</td>
+                                                <td style={(rowSelect === index) ? {backgroundColor: '#e4bfbf'} : {cursor: 'pointer'}}>{jogo.local}</td>
+                                                <td style={(rowSelect === index) ? {backgroundColor: '#e4bfbf'} : {cursor: 'pointer'}}>{jogo.mandante}</td>
+                                                <td style={(rowSelect === index) ? {backgroundColor: '#e4bfbf'} : {cursor: 'pointer'}}>{jogo.placar_mandante} x {jogo.placar_visitante}</td>
+                                                <td style={(rowSelect === index) ? {backgroundColor: '#e4bfbf'} : {cursor: 'pointer'}}>{jogo.visitante}</td>
                                             </tr>
-                                        </thead>
-                                        <tbody>
-                                            {filterJogos.map((jogo, index) => (
-                                                <tr onClick={(e) => handleClick(e, index, jogo)} style={(rowSelect === index) ? {backgroundColor: 'red'} : {cursor: 'pointer'}}>
-                                                    <td style={(rowSelect === index) ? {backgroundColor: '#e4bfbf'} : {cursor: 'pointer'}}>{jogo.data}</td>
-                                                    <td style={(rowSelect === index) ? {backgroundColor: '#e4bfbf'} : {cursor: 'pointer'}}>{jogo.hora}</td>
-                                                    <td style={(rowSelect === index) ? {backgroundColor: '#e4bfbf'} : {cursor: 'pointer'}}>{jogo.local}</td>
-                                                    <td style={(rowSelect === index) ? {backgroundColor: '#e4bfbf'} : {cursor: 'pointer'}}>{jogo.mandante}</td>
-                                                    <td style={(rowSelect === index) ? {backgroundColor: '#e4bfbf'} : {cursor: 'pointer'}}>{jogo.placar_mandante} x {jogo.placar_visitante}</td>
-                                                    <td style={(rowSelect === index) ? {backgroundColor: '#e4bfbf'} : {cursor: 'pointer'}}>{jogo.visitante}</td>
-                                                </tr>
-                                            ))}
-                                            {/* {gameXround.map((item) => (
-                                                <tr className="p-5">
-                                                    <td className="p-3">{item[0].data}</td>
-                                                    <td className="p-3">{item[0].hora}</td>
-                                                    <td className="p-3">{item[0].local}</td>
-                                                    <td className="p-3">{item[0].mandante}</td>
-                                                    <td className="p-3">{item[0].placar_mandante} X {item[0].placar_visitante}</td>
-                                                    <td className="p-3">{item[0].visitante}</td>
-                                                </tr>
-                                            ))} */}
-                                            {/* <tr className="p-5">
-                                                <td className="p-3">11/11/2022</td>
-                                                <td className="p-3">12:00h</td>
-                                                <td className="p-3">Forquilhinha</td>
-                                                <td className="p-3">Içara</td>
-                                                <td className="p-3">2 X 1</td>
-                                                <td className="p-3">7 de setembro</td>
-                                            </tr> */}
-                                        </tbody>
-                                    </Table>
-                                </Row>
+                                        ))}
+                                        {/* {gameXround.map((item) => (
+                                            <tr className="p-5">
+                                                <td className="p-3">{item[0].data}</td>
+                                                <td className="p-3">{item[0].hora}</td>
+                                                <td className="p-3">{item[0].local}</td>
+                                                <td className="p-3">{item[0].mandante}</td>
+                                                <td className="p-3">{item[0].placar_mandante} X {item[0].placar_visitante}</td>
+                                                <td className="p-3">{item[0].visitante}</td>
+                                            </tr>
+                                        ))} */}
+                                        {/* <tr className="p-5">
+                                            <td className="p-3">11/11/2022</td>
+                                            <td className="p-3">12:00h</td>
+                                            <td className="p-3">Forquilhinha</td>
+                                            <td className="p-3">Içara</td>
+                                            <td className="p-3">2 X 1</td>
+                                            <td className="p-3">7 de setembro</td>
+                                        </tr> */}
+                                    </tbody>
+                                </Table>
+                            </Row>
                             </>
     )
                                         }

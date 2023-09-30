@@ -112,15 +112,15 @@ const CardContet = (props) => {
   const [showUpdate, setShowUpdate] = useState(false)
   const [showDelete, setShowDelete] = useState(false)
   const [events, setEvents] = useState([]);
-  const [title, setTitle] = useState('')
-  const [subTitle, setSubTitle] = useState('')
+  const [title, setTitle] = useState(item.nome_evento)
+  const [subTitle, setSubTitle] = useState(item.descricao)
   const [categorySelect, setCategorySelect] = useState({nome: 'Categorias'})
   const [editor, setEditor] = useState(item.conteudo)
   const [path, setPath] = useState('')
   const [formatedDate, setFormatedDate] = useState('')
-  const [date, setDate] = useState('')
+  const [date, setDate] = useState(item.data_evento)
   const [file, setFile] = useState('')
-  const [local, setLocal] = useState('')
+  const [local, setLocal] = useState(item.local)
   const navigate = useNavigate()
   useEffect(() => {
       fetchData()
@@ -143,11 +143,12 @@ const CardContet = (props) => {
 
           const dateOriginal = item.data_evento
           const dateHourObject = new Date(dateOriginal)
-          const hour = dateHourObject.getHours()
-          const minutes = dateHourObject.getMinutes();
+          const hour = dateHourObject.getHours() + 3
+          let minutes = dateHourObject.getMinutes();
+          if(minutes < 9 && minutes > -1) minutes = "0" + minutes
           console.log(`${hour}:${minutes}`)
           const day = dateHourObject.getUTCDate();
-          const month = dateHourObject.getUTCMonth();
+          const month = dateHourObject.getUTCMonth() + 1; 
           const formatedMonth = month.toString().padStart(2, '0');
           const year = dateHourObject.getUTCFullYear();
           
@@ -256,8 +257,8 @@ const handleDate = (e) => {
                         <Card.Text style={{color: '#828282', fontWeight: 400, fontSize: 14, marginBottom: 30}}>{item.local}</Card.Text>
                     </Card.Body>
                     <div className="d-flex justify-content-around align-items-end" >
-                      <GrEdit onClick={clickEdit} className="p-2" style={{borderRadius: '0.3rem', fontSize: 50, background: '#091B361A', fontColor: '#091B36', cursor: 'pointer'}}/>
-                      <FiTrash2 onClick={clickDelete} className="p-2" style={{borderRadius: '0.3rem', fontSize: 50, background: '#D6000729', color: '#D60007', cursor: 'pointer'}}/>
+                      <GrEdit onClick={clickEdit} className="p-2" style={{borderRadius: '0.3rem', fontSize: 40, background: '#091B361A', fontColor: '#091B36', cursor: 'pointer'}}/>
+                      <FiTrash2 onClick={clickDelete} className="p-2" style={{borderRadius: '0.3rem', fontSize: 40, background: '#D6000729', color: '#D60007', cursor: 'pointer'}}/>
                     </div>
                   </div>
               </Card>
@@ -269,7 +270,7 @@ const handleDate = (e) => {
                 <Modal.Footer className="justify-content-center">
                   <Form>
                       <Form.Group controlId="title">
-                          <Form.Label>Titulo</Form.Label>
+                          <Form.Label>Nome do evento</Form.Label>
                           <FormControl 
                           type="text"
                           value={title}
