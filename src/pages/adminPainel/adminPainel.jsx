@@ -73,14 +73,14 @@ export const AdminPainel = (props) => {
                 <hr className="m-0" style={{border: 'none', height: '2px', background: 'grey'}}></hr>
                 <Row className="p-0 m-0 mx-3 mt-3 mt-md-5">
                   {selectButton.map((button, index) => (
-                    <Row id={index} onClick={(e)=> handleButtons(e, index)} key={button.id} style={{cursor: 'pointer', background: (button.selected) ? '#FFFFFF17' : '', borderRadius: '0.5rem'}} className=" my-2 d-flex align-items-center" >
-                      <p id={index} className="my-custom-text flex-grow-1" style={{color: (button.selected) ? '#FFFFFF' : '#FFFFFFB2', border: 'none'}}>{renderIcon(button.icon, index)} {button.title}</p>
+                    <Row id={index} onClick={(e)=> handleButtons(e, index)} key={button.id} style={{display: 'flex', justifyContent: 'center', alignContent: 'center', alignItems: 'center' ,cursor: 'pointer', background: (button.selected) ? '#FFFFFF17' : '', borderRadius: '0.5rem'}} className=" my-2 d-flex align-items-center" >
+                      <p id={index} className="my-custom-text flex-grow-1 my-3" style={{color: (button.selected) ? '#FFFFFF' : '#FFFFFFB2', border: 'none', fontSize: 12}}>{renderIcon(button.icon, index)} {button.title}</p>
                     </Row>
                   ))}
                 </Row>
                 
                 <Row onClick={handleLogout} className="p-0 m-0 mx-3 mt-3 d-flex align-items-center" style={{cursor: 'pointer'}}>
-                  <p className="my-custom-text flex-grow-1" style={{color: '#FFFFFFB2'}}><FiLogOut className="mx-3"/> Sair</p>
+                  <p className="my-custom-text flex-grow-1" style={{color: '#FFFFFFB2', fontSize: 12}}><FiLogOut className="mx-3"/> Sair</p>
                 </Row>
 
             </Col>
