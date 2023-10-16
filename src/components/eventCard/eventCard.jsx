@@ -82,11 +82,11 @@ export const EventCard = (props) => {
     console.log(paths)
     const renderNewsCards = () => {
         return events.map((item, index) => (
-            <Col key={index} xs={6} sm={3} md={3} lg={3} className="mb-3">  
-                <Card className="d-flex flex-column" style={{border: 'none', minWidth: 300}}>
+            <Col key={index} xs={6} sm={3} md={3} lg={2} className="mb-3 mx-5">  
+                <Card className="d-flex flex-column" style={{border: 'none', minWidth: 250}}>
                     {paths.length > 0 && <Card.Img variant="top" src={`${api}photo/getPhoto/${paths[index].id_foto_fk}`} style={{ // Definindo a altura máxima
-                        maxWidth: 400,
-                        maxHeight: 250
+                        maxWidth: 350,
+                        maxHeight: 150
                     }}/>}
                     <Card.Body className="p-0">
                         <p className="card-date p-0 m-0 mt-3" style={{fontWeight: 600, color: '#D60007', fontSize: 14}}>{`${item.data_evento}`}</p>
