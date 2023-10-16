@@ -19,9 +19,12 @@ export const UpdateChampionship = ({campeonato, showUpdate}) => {
     const [trigger, setTrigger] = useState(false)
     const [selectRow, setSelectRow] = useState(-1)
     const [selectJogo, setSelectJogo] = useState({})
+    const [jogoSelecionado, setJogoSelecionado] = useState(false)
+
     useEffect(() => {
         fetchData()
         console.log(rodada)
+        console.log(selectRow)
     }, [])
     const fetchData = async () => {
         const response = await RoundsService.getRoundByChampionshipId(campeonato.id)
@@ -45,8 +48,8 @@ export const UpdateChampionship = ({campeonato, showUpdate}) => {
             "local": local,
             "mandante": mandante,
             "visitante": visitante,
-            "placar_visitante": 0,
-            "placar_mandante": 0
+            "placar_visitante": visitantePlacar,
+            "placar_mandante": mandantePlacar
         }
         console.log(date, hour)
         const response = await GamesService.registerGame(object)
@@ -84,7 +87,7 @@ export const UpdateChampionship = ({campeonato, showUpdate}) => {
             <Col style={{maxWidth: '7%'}}>
                 <Button onClick={(e) => showUpdate(false)} style={{background: '#091B36', border: 'none'}}><AiOutlineArrowLeft /></Button>
             </Col>
-            <Row>{(rodada == 0) ? <></> : <ChampionshipTable create setTrigger={setTrigger} trigger={trigger} setSelectJogo={setSelectJogo} setVisitantePlacar={setVisitantePlacar} setMandantePlacar={setMandantePlacar} setVisitante={setVisitante} setMandante={setMandante} campeonato={campeonato} onChangeRodada={setRodada} selectRow={setSelectRow} setLocal={setLocal} setDate={setDate} setHour={setHour} rodada={rodada} setRodada={setRodada} rodadas={rodadas} setRodadas={setRodadas}/>}</Row>
+            <Row>{(rodada == 0) ? <></> : <ChampionshipTable create setJogoSelecionado={setJogoSelecionado} setTrigger={setTrigger} trigger={trigger} setSelectJogo={setSelectJogo} setVisitantePlacar={setVisitantePlacar} setMandantePlacar={setMandantePlacar} setVisitante={setVisitante} setMandante={setMandante} campeonato={campeonato} onChangeRodada={setRodada} selectRow={setSelectRow} setLocal={setLocal} setDate={setDate} setHour={setHour} rodada={rodada} setRodada={setRodada} rodadas={rodadas} setRodadas={setRodadas}/>}</Row>
             <Row>
             <Col>
                 <Form>
@@ -129,7 +132,6 @@ export const UpdateChampionship = ({campeonato, showUpdate}) => {
                              onChange={(e) => setMandante(e.target.value)}  />
                         </Form.Group>
                     </Col>
-                    {(selectRow > -1) &&
                     <Col  style={{maxWidth: 100}}>
                     <Form.Group controlId="mandante_placar">
                         <Form.Label>M</Form.Label>
@@ -139,7 +141,7 @@ export const UpdateChampionship = ({campeonato, showUpdate}) => {
                          value={mandantePlacar}
                          onChange={(e) => setMandantePlacar(e.target.value)}  />
                     </Form.Group>
-                </Col>}
+                </Col>
                     <Col >
                         <Form.Group controlId="Visitante">
                             <Form.Label>Visitante</Form.Label>
@@ -150,7 +152,7 @@ export const UpdateChampionship = ({campeonato, showUpdate}) => {
                              onChange={(e) => setVisitante(e.target.value)}  />
                         </Form.Group>
                     </Col>
-                    {(selectRow > -1) &&
+
                     <Col style={{maxWidth: 100}}>
                     <Form.Group controlId="visitante_placar" >
                         <Form.Label>V</Form.Label>
@@ -160,11 +162,11 @@ export const UpdateChampionship = ({campeonato, showUpdate}) => {
                          value={visitantePlacar}
                          onChange={(e) => setVisitantePlacar(e.target.value)}  />
                     </Form.Group>
-                </Col>}
+                </Col>
                     </Row>
                 </Form>
             </Col>
-            {(selectRow > -1) ? 
+            {(jogoSelecionado) ? 
             <><Button onClick={handleUpdateGame} className="mt-4 py-3" style={{background: '#091B36', border: 'none', borderRadius: 15}}>Atualizar</Button>
             <Button onClick={handleDeleteGame} variant="danger" className="mt-4 py-3" style={{border: 'none', borderRadius: 15}}>Excluir</Button></>
                 :

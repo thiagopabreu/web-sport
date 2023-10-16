@@ -154,9 +154,9 @@ export const Championship = () => {
                 onSearchTermChange={handleSearchTermChange}
                 onSearch={handleSearch}
             />
-
+            <div className="mb-5"></div>
             {championships.map((item) => (
-                <Col xs={12} sm={6} md={4} lg={3} className="mt-5" style={{display: 'flex', flexDirection: 'row', width: '93%', justifyContent: 'space-between', alignContent: 'center', alignItems: 'center', background:'#E2E8F082', borderRadius: 10 }}>
+                <Col xs={12} sm={6} md={4} lg={3} className="mt-4" style={{display: 'flex', flexDirection: 'row', width: '93%', justifyContent: 'space-between', alignContent: 'center', alignItems: 'center', background:'#E2E8F082', borderRadius: 10 }}>
                     
                     <div className="mx-3" style={{display: 'flex', alignContent: 'center', alignItems: 'center'}}>
                         <IconSoccerBall  />

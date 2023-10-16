@@ -8,6 +8,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import JoditEditor from "jodit-react";
 import { Users } from "@phosphor-icons/react";
 import { RegisterEvent } from "./newEvent";
+import { useMediaQuery } from "react-responsive";
 export const Events = () => {
     const api = process.env.REACT_APP_API_BASE_URL;
     const [events, setEvents] = useState([])
@@ -66,13 +67,17 @@ export const Events = () => {
       setTriggetEmpity(!triggerEmpty)
 
     };
-    console.log(currentItens)
+    const isMobileP = useMediaQuery({ query: '(max-width: 320px)' });
+    const isMobileM = useMediaQuery({ query: '(max-width: 375px)' });
+    const isMobileL = useMediaQuery({ query: '(max-width: 425px)' });
+    const isTablet = useMediaQuery({ query: '(min-width: 768px) and (max-width: 1023px)' });
+    const isLaptop = useMediaQuery({ query: '(min-width: 1024px) and (max-width: 1439px)' });
     return (
 
             (addEvent) ? <RegisterEvent setAddEvent={setAddEvent} /> 
             
             : 
-          <Row  className="d-flex flex-row mt-5 mx-5 px-5" style={{justifyContent: 'space-between'}}>
+          <Row  className="d-flex flex-row mt-5 mx-5 px-4" style={{justifyContent: 'space-between'}}>
               <Col xs={12} sm={6} md={4} lg={3} style={{display: 'flex'}}>
                   <Button onClick={handleAdicionar} className="w-50 p-0 m-0 " style={{background: '#091B36'}}>
                       Adicionar +
@@ -83,9 +88,9 @@ export const Events = () => {
         onSearchTermChange={handleSearchTermChange}
         onSearch={handleSearch}
       />  
-              <Row className="">
+              <Row className="d-flex flex-wrap">
               {currentItens.map((item, index) => (
-                      <Col key={item.id} md={3} className="mt-5">
+                      <Col key={item.id} md={isTablet ? 6 : 3} className="mt-5">
                         <CardContet item={item} trigger={trigger} index={index} />
                       </Col>
                 ))}
@@ -243,25 +248,24 @@ const handleDate = (e) => {
 }
 
   return (
-    <Col className="d-flex flex-column" style={{ border: 'none', minWidth: 300, justifyContent: 'space-around'}}>
-      <Card className="d-flex flex-column" style={{border: 'none', minWidth: 300, justifyContent: 'space-around', background: '#E2E8F082', borderTopLeftRadius: 20, borderTopRightRadius: 20, borderEndStartRadius: 0, borderEndEndRadius: 0}}>
-                  <Card.Img variant="top" src={`${api}photo/getPhoto/${path}`} style={{ // Definindo a altura máxima
-                      width: 'auto',
-                      maxHeight: '180px'
-                  }}/>
-                  <div className="mx-4 mb-3">
-                    <Card.Body className="p-0">
-                        <p className="card-date p-0 m-0 mt-3" style={{fontWeight: 600, color: '#D60007', fontSize: 14}}>{formatedDate}</p>
-                        <Card.Title style={{color: '#091B36', fontWeight: 600, fontSize: 18, marginTop: 10}}>{item.nome_evento}</Card.Title>
-                        <Card.Text style={{color: '#213249', fontWeight: 400, fontSize: 14, marginTop: 10,  minHeight: 100}}>{item.descricao}</Card.Text>
-                        <Card.Text style={{color: '#828282', fontWeight: 400, fontSize: 14, marginBottom: 30}}>{item.local}</Card.Text>
-                    </Card.Body>
-                    <div className="d-flex justify-content-around align-items-end" >
-                      <GrEdit onClick={clickEdit} className="p-2" style={{borderRadius: '0.3rem', fontSize: 40, background: '#091B361A', fontColor: '#091B36', cursor: 'pointer'}}/>
-                      <FiTrash2 onClick={clickDelete} className="p-2" style={{borderRadius: '0.3rem', fontSize: 40, background: '#D6000729', color: '#D60007', cursor: 'pointer'}}/>
-                    </div>
-                  </div>
-              </Card>
+    <Col lg={12} className="d-flex flex-column" style={{ border: 'none', justifyContent: 'space-around'}}>
+      <Card className="d-flex flex-column grow-1" style={{ border: 'none', background: '#E2E8F082', borderRadius: '20px 20px 0 0' }}>
+    <Card.Img variant="top" src={`${api}photo/getPhoto/${path}`} className="img-fluid" style={{
+      width: '100%', maxHeight: '160px', maxWidth: '100%'
+    }} />
+    <div className="mx-3 my-3">
+      <Card.Body className="p-0">
+        <p className="card-date p-0 m-0 mt-2" style={{ fontWeight: 600, color: '#D60007', fontSize: 14 }}>{formatedDate}</p>
+        <Card.Title style={{ color: '#091B36', fontWeight: 600, fontSize: 18, marginTop: 10 }}>{item.nome_evento}</Card.Title>
+        <Card.Text className="text-truncate" style={{ color: '#213249', fontWeight: 400, fontSize: 14, marginTop: 10, minHeight: 100 }}>{item.descricao}</Card.Text>
+        <Card.Text style={{ color: '#828282', fontWeight: 400, fontSize: 14, marginBottom: 20 }}>{item.local}</Card.Text>
+      </Card.Body>
+      <div className="d-flex justify-content-around align-items-end">
+        <GrEdit onClick={clickEdit} className="p-2" style={{ borderRadius: '0.3rem', fontSize: 30, background: '#091B361A', fontColor: '#091B36', cursor: 'pointer' }} />
+        <FiTrash2 onClick={clickDelete} className="p-2" style={{ borderRadius: '0.3rem', fontSize: 30, background: '#D6000729', color: '#D60007', cursor: 'pointer' }} />
+      </div>
+    </div>
+  </Card>
             <>
               <Modal show={showUpdate} onHide={setShowUpdate}>
                 <Modal.Header closeButton>

@@ -116,15 +116,19 @@ export const ChampionshipTable = (props) => {
     //const filterJogos = jogos.filter(jogo => jogo.id_rodada_fk === selectedRodada)
     
     const handleClick = (e, index, jogo) => {
-        if(rowSelect == index) {
+        console.log(index, rowSelect)
+        if(rowSelect === index) {
+            props.setJogoSelecionado(false)
             setRowSelect(-1)
         } else {
+            props.setJogoSelecionado(true)
             setRowSelect(index)
             if(props.setSelectJogo){
                 props.setSelectJogo(jogo)
             }
         }
         
+        console.log(rowSelect)
     }
     const createRound = async (e) => {
         const response = await RoundsService.registerRound({

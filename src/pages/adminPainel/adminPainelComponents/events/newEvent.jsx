@@ -1,6 +1,6 @@
 import { Editor } from "draft-js"
 import { useEffect, useState } from "react"
-import { Button, Col, Dropdown, Form, FormControl, FormGroup, Row } from "react-bootstrap"
+import { Button, Col, Dropdown, Form, FormControl, FormGroup, Row, Spinner } from "react-bootstrap"
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 
@@ -26,6 +26,7 @@ export const RegisterEvent = (props) => {
     const [categorySelect, setCategorySelect] = useState({nome: 'Categorias'})
     const [date, setDate] = useState('')
     const [local, setLocal] = useState('')
+    const [clicked, setClicked] = useState(false)
     useEffect(() => {
         fetchCategoriesData()
     }, [])
@@ -41,10 +42,12 @@ export const RegisterEvent = (props) => {
     }
     const registerEvent = async (e) => {
 
-
+        setClicked(true)
         if(title === '' && descricao === '' && local === '' && date === '') {
+            setClicked(false)
             alert("Preencha todas as informações necessárias")
         } else if(file === '') {
+            setClicked(false)
             alert("Por favor, selecione uma foto")
         } else {
             const object = {
@@ -54,6 +57,7 @@ export const RegisterEvent = (props) => {
                 "data_evento": date,
                 "id_categoria_fk": 3,
             }
+
             console.log(object)
             console.log(file)
             const response = await EventService.registerEvent(object)
@@ -116,7 +120,7 @@ export const RegisterEvent = (props) => {
                         <FormGroup controlId="imagem">
                             <Form.Label>Imagem</Form.Label>
                             <FormControl 
-                            accept=".png"
+                            accept="image/*"
                             required
                             type="file"
                             onChange={handleFileChange}
@@ -137,7 +141,7 @@ export const RegisterEvent = (props) => {
                                 ))}
                             </Dropdown.Menu>
                         </Dropdown> */}
-                        <Button className="mt-4" onClick={(e) => registerEvent(e)} style={{background: '#091B36', border: 'none'}}>Publicar</Button>
+                        <Button disabled={clicked} className="mt-4" onClick={(e) => registerEvent(e)} style={{background: '#091B36', border: 'none'}}>{clicked ? <Spinner animation="border" role="status"><span className="visually-hidden"></span></Spinner> : 'Publicar'}</Button>
                     </Form>
                 </Form>
             </Col>
